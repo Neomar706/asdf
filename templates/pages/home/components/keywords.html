@@ -1,0 +1,33 @@
+<div class='my-3 h-10 flex items-center' x-data='{
+    keywords: [
+        {label: "Todos", active: true},
+        {label: "Mixes", active: false},
+        {label: "Música", active: false},
+        {label: "MasterChef", active: false},
+        {label: "En tiempo real", active: false},
+        {label: "Derivadas", active: false},
+        {label: "Programación", active: false},
+        {label: "Videojuegos", active: false},
+        {label: "Listas de", active: false},
+        {label: "DJ mix", active: false},
+        {label: "Componentes electrónicos", active: false},
+        {label: "Salsa", active: false},
+        {label: "Unidades centrales de procesamiento", active: false},
+        {label: "Orquestas", active: false},
+        {label: "Física", active: false},
+        {label: "Historial", active: false},
+        {label: "Gadgets", active: false},
+        {label: "Pop latino", active: false},
+        {label: "Subidos recientemente", active: false},
+        {label: "Vistos", active: false},
+        {label: "Novedades para ti", active: false},
+    ]
+}'>
+    <template x-for='keyword in keywords'>
+        <button 
+            x-text='keyword.label' 
+            :class='keyword.active ? "bg-white text-black" : "bg-cgray-800 hover:bg-cgray-600 text-white"' 
+            class='py-[0.3rem] px-3 rounded-lg mx-1 truncate flex justify-center min-w-fit select-none'
+        ></button>
+    </template>
+</div>

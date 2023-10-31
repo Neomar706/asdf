@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+Youtube
+{% endblock title %}
+
+{% block extra_head %}
+{% endblock extra_head %}
+
+
+{% block navbar %}
+{% include 'components/navbar.html' with avatar_url=avatar_url user_id=user_id %}
+{% endblock navbar %}
+
+{% block content %}
+<div class='flex text-white mt-12'>
+
+    {% include 'components/sidebar.html' %}
+
+    <div :class='$store.global.sidebar.show ? "ml-60" : "ml-20"' class="flex flex-col flex-1 overflow-x-hidden">
+        <div class='fixed bg-cgray-900'>
+            <div :style='$store.global.sidebar.show ? $store.global.contentWShort : $store.global.contentWFull' class='w-full ml-4 mr-6 relative'>
+                <div id='keywords' class='overflow-x-hidden mr-5'>
+                    <div x-show='!$store.global.keywords.start' class='flex justify-center absolute top-3 left-0'>
+                        <div class='bg-cgray-900 pr-4'>
+                            <button @click='$store.global.keywords.toLeft()' class='w-10 h-10 bg-transparent hover:bg-zinc-800 rounded-full flex justify-center items-center'>
+                                <div class='w-6 h-6'>
+                                    <svg height='24' viewBox='0 0 24 24' width='24' focusable='false' style='pointer-events: none; display: block; width: 100%; height: 100%;'>
+                                        <path fill='white' d='M14.96 18.96 8 12l6.96-6.96.71.71L9.41 12l6.25 6.25-.7.71z'></path>
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
+                        <div class='w-8 h-10 bg-gradient-to-r from-cgray-900 to-transparent'>
+                        </div>
+                    </div>
+            
+                    {% include 'pages/home/components/keywords.html' %}
+            
+                    <div x-show='!$store.global.keywords.end' class='flex justify-center absolute top-3 right-0'>
+                        <div class='w-8 h-10 bg-gradient-to-r from-transparent to-cgray-900'>
+                        </div>
+                        <div class='bg-cgray-900 pl-4'>
+                            <button @click='$store.global.keywords.toRight()' class='w-10 h-10 bg-transparent hover:bg-zinc-800 rounded-full flex justify-center items-center'>
+                                <div class='w-6 h-6'>
+                                    <svg height='24' viewBox='0 0 24 24' width='24' focusable='false' style='pointer-events: none; display: block; width: 100%; height: 100%;'>
+                                        <path fill='white' d='m9.4 18.4-.7-.7 5.6-5.6-5.7-5.7.7-.7 6.4 6.4-6.3 6.3z'></path>
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div :style='$store.global.sidebar.show ? $store.global.contentWShort : $store.global.contentWFull' class='w-full ml-4 mr-6 mt-14 flex flex-wrap'>
+            {% for video in videos %}
+            {% include 'components/video-card.html' with video=video %}
+            {% include 'components/video-card.html' with video=video %}
+            {% include 'components/video-card.html' with video=video %}
+            {% include 'components/video-card.html' with video=video %}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block footer %}
+{% endblock footer %}
+
+{% block javascript %}
+{% endblock javascript %}

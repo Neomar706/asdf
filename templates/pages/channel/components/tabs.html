@@ -1,0 +1,26 @@
+<div id="{{ id }}" style='top: 220px' class="border-b-2 border-cgray-600 w-full font-semibold bg-cgray-900 {{ extra_class }}">
+    <div class="mx-6 my-2">
+        <a href="{% url 'channel:main' user=channel.user.username tab='main' %}" :class="activeTab === 'main' ? activeClass : inactiveClass">
+            PÁGINA PRINCIPAL
+        </a>
+
+        {% if channel.videos_qty > 0 %}
+        <a href="{% url 'channel:main' user=channel.user.username tab='videos' %}" :class="activeTab === 'videos' ? activeClass : inactiveClass">
+            VIDEOS
+        </a>
+        {% endif %}
+
+        {% if channel.playlists_qty > 0 %}
+        <a href="{% url 'channel:main' user=channel.user.username tab='playlists' %}" :class="activeTab === 'playlists' ? activeClass : inactiveClass">
+            PLAYLISTS
+        </a>
+        {% endif %}
+        
+        <a href="#" :class="activeTab === 'channels' ? activeClass : inactiveClass">
+            CANALES
+        </a>
+        <a href="#" :class="activeTab === 'info' ? activeClass : inactiveClass">
+            INFORMACIÓN
+        </a>
+    </div>
+</div>

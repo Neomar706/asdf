@@ -1,0 +1,114 @@
+{% load humanize %}
+{% load truncate %}
+
+<div class='ml-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2'>
+    {% for playlist in playlists %}
+    <div x-data="{
+        {% if channel.user == user %}
+        activeBtn{{ playlist.pk }}: false
+        {% endif %}
+    }" class='relative group cursor-pointer mt-4'>
+        <a href="##">
+            <div class='relative'>
+                <div class='w-full h-28 rounded-md overflow-hidden'>
+                    <img class='h-full w-full object-cover' src="/media/{{ playlist.thumbnail }}" alt="">
+                </div>
+                <span class='absolute right-1 bottom-0.5 px-1.5 leading-6 rounded-md bg-black/75 text-sm select-none flex items-center'>
+                    <span class='w-4 h-4 mr-1'>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                            <path fill='white' d="M22 7H2v1h20V7zm-9 5H2v-1h11v1zm0 4H2v-1h11v1zm2 3v-8l7 4-7 4z"></path>
+                        </svg> 
+                    </span>
+                    {% if playlist.videos.count == 0 %}
+                    Sin videos
+                    {% else %}
+                    {{ playlist.videos.count }} videos
+                    {% endif %}
+                </span>
+                <div class='absolute bg-black/75 group-hover:flex items-center justify-center uppercase top-0 left-0 w-full h-full hidden'>
+                    <span class='text-xs text-white/90 font-semibold tracking-wide select-none flex items-center'>
+                        <span class='block w-6 h-6'>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                <path fill='white' d="m7 4 12 8-12 8V4z"></path>
+                            </svg>
+                        </span>
+                        Reproducir todos
+                    </span>
+                </div>
+            </div>
+            <div class='mt-2'>
+                <div class='relative'>
+                    <h3 class='text-sm font-semibold pr-6' title="{{ playlist.title }}">
+                        {{ playlist.title|truncate:40 }}
+                    </h3>
+                    {% if channel.user == user %}
+                    <button @click="activeBtn{{ playlist.pk }} = true" class='absolute top-0 right-0 w-6 h-6 hidden group-hover:inline-block'>
+                        <svg enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                            <path fill="white" d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"></path>
+                        </svg>
+                    </button>
+                    <div x-show="activeBtn{{ playlist.pk }}" @click.away="activeBtn{{ playlist.pk }} = false" class="absolute top-10 right-0 py-2 bg-cgray-800 rounded-md z-10">
+                        <button 
+                            @click='$store.global.showModal = true' 
+                            class='flex px-4 py-2 w-full hover:bg-cgray-600'
+                            hx-get="{% url 'playlist:add-videos-to-playlist' playlist=playlist.pk %}" 
+                            hx-target='#modal' 
+                            hx-swap='outerHTML' 
+                        >
+                            <div class='w-6 h-6'>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                    <path fill='white' d="M22 13h-4v4h-2v-4h-4v-2h4V7h2v4h4v2zm-8-6H2v1h12V7zM2 12h8v-1H2v1zm0 4h8v-1H2v1z"></path>
+                                </svg>
+                            </div>
+                            <p class='ml-4'>
+                                {% if playlist.videos.count == 0 %}
+                                Añadir videos
+                                {% else %}
+                                Añadir o remover
+                                {% endif %}
+                            </p>
+                        </button>
+                        <button 
+                            @click='$store.global.showModal = true' 
+                            class='flex px-4 py-2 w-full hover:bg-cgray-600'
+                            hx-get="{% url 'playlist:edit-playlist' playlist=playlist.pk %}" 
+                            hx-target='#modal' 
+                            hx-swap='outerHTML' 
+                        >
+                            <div class='w-6 h-6'>
+                                <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope tp-yt-iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g width="24" height="24" viewBox="0 0 24 24" class="style-scope tp-yt-iron-icon">
+                                    <path fill='white' d="M14.06 7.6L16.4 9.94L6.34 20H4V17.66L14.06 7.6ZM14.06 6.19L3 17.25V21H6.75L17.81 9.94L14.06 6.19ZM17.61 4.05L19.98 6.42L18.84 7.56L16.47 5.19L17.61 4.05ZM17.61 2.63L15.06 5.18L18.85 8.97001L21.4 6.42L17.61 2.63Z" class="style-scope tp-yt-iron-icon"></path></g>
+                                </svg>
+                            </div>
+                            <p class='ml-4'>Actualizar</p>
+                        </button>
+                        <button 
+                            @click='$store.global.showModal = true' 
+                            class='flex px-4 py-2 w-full hover:bg-cgray-600'
+                            hx-get="{% url 'playlist:remove-playlist' playlist=playlist.pk %}" 
+                            hx-target='#modal' 
+                            hx-swap='outerHTML' 
+                        >
+                            <div class='w-6 h-6'>
+                                <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope tp-yt-iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope tp-yt-iron-icon">
+                                    <path fill='white' d="M11,17H9V8h2V17z M15,8h-2v9h2V8z M19,4v1h-1v16H6V5H5V4h4V3h6v1H19z M17,5H7v15h10V5z" class="style-scope tp-yt-iron-icon"></path></g>
+                                </svg>
+                            </div>
+                            <p class='ml-4'>Eliminar</p>
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class=''>
+                    <span class='block text-[.8rem] text-white/70 font-semibold mb-4 leading-6'>
+                        Se actualizó {{ playlist.updated_at|naturaltime }}
+                    </span>
+                </div>
+            </div>
+        </a>
+        <a href='#' class='absolute left-0 bottom-0 block text-[.8rem] text-white/70 hover:text-white font-semibold'>
+            Ver playlist completa
+        </a>
+    </div>
+    {% endfor %}
+</div>

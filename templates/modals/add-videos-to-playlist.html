@@ -1,0 +1,63 @@
+{% load durationformat %}
+{% load moment %}
+
+<div @click.away='window.location.reload()' id='modal' class='w-11/12 h-5/6 bg-cgray-900 text-white rounded-lg shadow-lg p-4 overflow-y-hidden'>
+    <div class='flex justify-center text-2xl uppercase'>
+        Selecciona los videos que deseas agregar
+    </div>
+    <div x-data="{
+        addedToPlaylist: {{ list_pks }}
+    }" class="flex flex-col h-full pt-4 pb-8">
+        <div class="grid grid-cols-5 gap-4 h-full overflow-y-scroll scrollbar hover-scrollbar pr-4">
+            {% for video in videos %}
+            <div x-data="{
+                itemActive: {{ video.in_playlist }}
+            }" @click="
+                    itemActive = !itemActive
+                    addedToPlaylist.includes({{ video.pk }})
+                        ? addedToPlaylist = addedToPlaylist.filter(elem => elem !== {{ video.pk }})
+                        : addedToPlaylist.push({{ video.pk }})
+                " :class="itemActive ? 'bg-cgray-700' : 'bg-cgray-900'" class="hover:bg-cgray-700 rounded-md h-56 cursor-pointer">
+                <div class='group relative'>
+                    <a href="#">
+                        <img class='rounded-lg h-36 w-full object-cover' src="/media/{{ video.thumbnail }}" alt="{{ video.title }}">
+                        <span class='absolute right-1 bottom-0.5 px-1.5 leading-6 rounded-md bg-black/75 text-sm select-none'>
+                            {{ video.duration|durationformat }}
+                        </span>
+                    </a>
+                    <div x-show='itemActive' class='absolute w-full h-full top-0 left-0 bg-black/75 text-3xl flex items-center justify-center'>
+                        <span class='bg-black p-3 flex items-center justify-center rounded-full'>
+                            &nbsp;✓&nbsp;
+                        </span>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class='p-2'>
+                        <span class='block'>
+                            {{ video.title }}
+                        </span>
+                        <p class='text-white/50 text-sm'>
+                            <span>
+                                {{ video.views_qty }} vistas • 
+                            </span>
+                            <span>
+                                {{ video.created_at|custom_naturaltime }}
+                            </span>
+                        </p>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <form action="{% url 'playlist:add-videos-to-playlist' playlist=playlist_pk %}" method="POST" class="mt-4 flex justify-end">
+            {% csrf_token %}
+            <input type="hidden" name="encodeuri" :value="encodeURIComponent(JSON.stringify(addedToPlaylist))">
+            <button class='px-8 py-2 bg-cgray-800 hover:bg-cgray-600 rounded-full'>
+                Actualizar
+            </button>
+        </form>
+    </div>
+</div>
+<script>
+    window.addEventListener('keyup', e => e.key === 'Escape' && window.location.reload())
+</script>

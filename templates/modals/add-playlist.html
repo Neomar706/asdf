@@ -1,0 +1,46 @@
+<div x-data="{
+    isPublished: true
+}" @click.away='window.location.reload()' id='modal' class='w-1/2 bg-cgray-900 rounded-lg shadow-lg p-4'>
+    <div class='flex justify-center text-2xl text-white uppercase '>
+        {% if action == 'create' %}
+        Nueva playlist
+        {% elif action == 'edit' %}
+        Actualizar playlist
+        {% endif %}
+    </div>
+    {% if action == 'create' %}
+    <form action="{% url 'playlist:add-playlist' %}" method='POST' enctype='multipart/form-data'>
+    {% elif action == 'edit' %}
+    <form action="{% url 'playlist:edit-playlist' playlist=playlist_pk %}" method='POST' enctype='multipart/form-data'>
+    {% endif %}
+        {% csrf_token %}
+        <div class="mt-4">
+            {{ form.title }}
+        </div>
+        <div class='mt-4'>
+            <label id='thumbnail_label' tabindex='2' for="{{ form.thumbnail.id_for_label }}" class='w-full block px-5 py-3 bg-[#181818] hover:bg-cgray-800 text-white rounded-md text-center cursor-pointer'>
+                Seleccionar imagen de miniatura
+            </label>
+            {{ form.thumbnail }}
+        </div>
+        <div class="mt-4">
+            {{ form.description }}
+        </div>
+        <div class='mt-4 flex gap-4'>
+            <div class='w-full'>
+                <label tabindex='4' @click='isPublished = !isPublished' x-text="isPublished ? 'Público' : 'No listado'" for="{{ form.is_published.id_for_label }}" class='w-full block px-5 py-3 bg-[#181818] hover:bg-cgray-800 text-white rounded-md text-center cursor-pointer'></label>
+                {{ form.is_published }}
+            </div>
+            <button tabindex='4' type='submit' class='w-full block px-5 py-3 bg-[#181818] hover:bg-cgray-800 text-white rounded-md text-center cursor-pointer'>
+                Listo
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+    const thumbnail = document.getElementById('id_thumbnail')
+    const thumbnailLabel = document.getElementById('thumbnail_label')
+
+    thumbnail.onchange = e => thumbnailLabel.innerText = e.target.files[0].name
+    window.addEventListener('keyup', e => e.key === 'Escape' && window.location.reload())
+</script>

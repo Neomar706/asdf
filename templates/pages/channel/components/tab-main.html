@@ -1,0 +1,65 @@
+{% load truncate %}
+
+
+{% if user.username == channel.user.username and channel.videos_qty == 0 %}
+<div x-show="activeTab == 'main'">
+    <div class='flex justify-center items-center'>
+        <div class='w-80 text-sm my-20'>
+            <div class='w-40 mx-auto'>
+                <img draggable='false' src="https://www.gstatic.com/youtube/img/channels/empty_channel_dark_illustration.svg" alt="Subir videos">
+            </div>
+            <p class='flex justify-center font-semibold mt-2'>Subir un video para comenzar</p>
+            <p class='text-center text-white/80 mt-2'>Comienza a contar tu historia y a conectarte con los usuarios. Los videos que subas aparecerán aquí</p>
+            <div class='flex justify-center mt-2'>
+                <button 
+                    @click='$store.global.showModal = true' 
+                    class='bg-cgray-800 hover:bg-cgray-600 px-3.5 py-1.5 rounded-full'
+                    hx-get="{% url 'channel:add-video' %}" 
+                    hx-target='#modal' 
+                    hx-swap='outerHTML' 
+                >
+                    Subir video
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div x-show="activeTab == 'main'">
+    <div class='divide-y-2 divide-cgray-600 my-5'>
+        <div class='mx-8 my-4 grid grid-cols-12'>
+            <div class='col-span-4 h-max group relative'>
+                <div class='absolute w-full min-h-max pb-6 top-0 left-0 bg-gradient-to-b group-hover:from-black to-transparent'>
+                    <span class='ml-4 mt-2 group-hover:inline-block hidden text-lg font-semibold text-white'>
+                        Procedimiento Paso a Paso - Perceptrón Simple AND
+                    </span>
+                </div>
+                <video class='rounded-lg h-60 w-full object-cover' src="/media/videos/neomar7/23c2812f-5ea5-4204-a191-d2a9fe12b01d.mp4" poster="/media/thumbnails/neomar7/e02861e7-c5b9-4e15-af6c-545e6dec6895.jpeg" controls></video>
+            </div>
+            <div class='col-span-4 col-start-5'>
+                <div class='ml-5 h-60'>
+                    <h2 class='text-lg font-semibold text-white'>
+                        Procedimiento Paso a Paso - Perceptrón Simple AND
+                    </h2>
+                    <span class='mt-5 text-sm text-white/75 block'>
+                        1.952.031 vistas • hace 4 años
+                    </span>
+                    <p class='mt-2 text-[.9rem] leading-5 tracking-wide'>
+                        {{ lorem|truncate:250 }}
+                    </p>
+                    <a href="#" class='text-sm font-semibold py-2 text-white/90 hover:text-white/100'>
+                        MÁS INFORMACIÓN
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class='divide-y-2 divide-cgray-600'>
+            {% include "pages/channel/components/videos-slider.html" with index='0' %}
+            {% include "pages/channel/components/videos-slider.html" with index='1' %}
+            {% include "pages/channel/components/videos-slider.html" with index='2' %}
+        </div>
+
+    </div>
+</div>
+{% endif %}
