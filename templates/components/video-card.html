@@ -1,0 +1,29 @@
+{% load humanize %}
+
+<div class='my-4 pr-4 w-full md:w-1/2 lg:w-1/3 xl:w-1/4'>
+    <div class='cursor-pointer'>
+        <div class='rounded-xl overflow-hidden'>
+            <a href="{% url 'watch' pk=video.pk %}">
+                <img src="/media/{{ video.thumbnail }}" alt="thumbnail" class="h-44 object-cover w-full" >
+            </a>
+        </div>
+        <div class='flex mt-3'>
+            <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class='rounded-full overflow-hidden w-10 h-10 shrink-0'>
+                <img src="/static/images/img-profile-1.jpg" alt="Profile 1">
+            </a>
+            <div class='ml-3'>
+                <a href="{% url 'watch' pk=video.pk %}">
+                    <p class='text-left line-clamp-2' title="{{ video.title }}">
+                        {{ video.title }}
+                    </p>
+                </a>
+                <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class='mt-2 text-sm text-zinc-400 hover:text-white'>
+                    {{ video.channel.user.get_full_name }}
+                </a>
+                <p class='ext-sm text-zinc-400'>
+                    {{ video.views.count }} vistas • {{ video.created_at|naturaltime }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

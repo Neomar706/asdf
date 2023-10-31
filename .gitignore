@@ -1,0 +1,5 @@
+/venv/
+/theme/static_src/node_modules/
+/**/__pycache__/
+/media/
+.env

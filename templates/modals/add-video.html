@@ -1,0 +1,70 @@
+{% load truncate %}
+
+<div x-data="{
+    isPublished: true,
+    isForEveryone: true,
+}" @click.away='window.location.reload()' id='modal' class='w-1/2 bg-cgray-900 rounded-lg shadow-lg p-4'>
+    <div class='flex justify-center text-2xl text-white uppercase '>
+        Subir video
+    </div>
+    <form action="{% url 'channel:add-video' %}" method='POST' enctype='multipart/form-data'>
+        {% csrf_token %}
+        <div class='mt-4'>
+            {{ form.title }}
+        </div> 
+        <div class='mt-4 flex gap-4'>
+            <div class="w-full">
+                <label id='video_label' tabindex='2' for='{{ form.video.id_for_label }}' class='block px-5 py-3 bg-[#181818] hover:bg-cgray-800 text-white rounded-md text-center cursor-pointer truncate w-full max-w-sm'>
+                    Seleccionar video
+                </label>
+                {{ form.video }}
+            </div>
+            <div class="w-full">
+                <select id="id_playlist" name="playlist" class='w-full h-full border-none outline-none bg-cgray-800 rounded-md text-white text-center'>
+                    <option value="" selected>Agregar a una playlist (opcional)</option>
+                    {% for playlist in playlists %}
+                    <option value="{{ playlist.pk }}" title="{{ playlist.title }}">{{ playlist.title|truncate:40 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div> 
+        <div class='mt-4'>
+            {{ form.description }}
+        </div>
+        <div class='mt-4'>
+            <label id='thumbnail_label' tabindex='4' for="{{ form.thumbnail.id_for_label }}" class='w-full block px-5 py-3 bg-[#181818] hover:bg-cgray-800 text-white rounded-md text-center cursor-pointer'>
+                Seleccionar imagen de miniatura
+            </label>
+            {{ form.thumbnail }}
+        </div>
+        <div class='mt-4 flex gap-4'>
+            <div class='w-full'>
+                <label tabindex='5' @click='isPublished = !isPublished' for="{{ form.is_published.id_for_label }}" class='w-full block px-5 py-3 bg-[#181818] hover:bg-cgray-800 text-white rounded-md text-center cursor-pointer'>
+                    <span x-text="isPublished ? 'Público' : 'No listado'"></span>
+                </label>
+                {{ form.is_published }}
+            </div>
+            <div class='w-full'>
+                <label tabindex='6' @click='isForEveryone = !isForEveryone' for="{{ form.is_for_everyone.id_for_label }}" class='w-full block px-5 py-3 bg-[#181818] hover:bg-cgray-800 text-white rounded-md text-center cursor-pointer'>
+                    <span x-text="isForEveryone ? 'Para todo publico' : 'Público restringido'"></span>
+                </label>
+                {{ form.is_for_everyone }}
+            </div>
+        </div>
+        <button tabindex='7' type='submit' class='w-full block px-5 py-3 bg-[#181818] hover:bg-cgray-800 text-white rounded-md text-center cursor-pointer mt-4'>
+            Publicar
+        </button>
+    </form>
+</div>
+<script>
+    const video = document.getElementById('id_video')
+    const videoLabel = document.getElementById('video_label')
+
+    const thumbnail = document.getElementById('id_thumbnail')
+    const thumbnailLabel = document.getElementById('thumbnail_label')
+
+    video.onchange = e => videoLabel.innerText = e.target.files[0].name    
+    thumbnail.onchange = e => thumbnailLabel.innerText = e.target.files[0].name
+
+    window.addEventListener('keyup', e => e.key === 'Escape' && window.location.reload())
+</script>

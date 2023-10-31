@@ -1,0 +1,16 @@
+<div :class='$store.global.sidebar.show ? "flex" : "flex"' title='{{ title }}'>
+    <a 
+        href="#" 
+        :class='$store.global.sidebar.show ? "px-3 py-1" : "flex-col justify-center py-3 mx-1"' 
+        class='flex w-full rounded-xl 
+            {% if active == "True" %} bg-cgray-800 hover:bg-cgray-600 
+            {% else %} bg-transparent hover:bg-cgray-800 
+            {% endif %} items-center'>
+        <div :class='$store.global.sidebar.show ? "w-8 h-8" : "w-6 h-6"' class='fill-current'>
+            {{ icon }}
+        </div>
+        <p :style='!$store.global.sidebar.show ? "font-size: 0.65rem;" : ""' :class='$store.global.sidebar.show ? "ml-6" : "justify-center text-xs flex"' class="w-full h-6 font-medium text-zinc-200 text-sm items-center truncate">
+            {{ title }}
+        </p>
+    </a>
+</div>

@@ -1,0 +1,38 @@
+<div x-data="{
+    activeBtn: 0,
+    activeClass: 'bg-white text-gray-800 font-semibold text-sm hover:bg-opacity-90 px-3.5 py-1.5 rounded-md ml-3',
+    inactiveClass: 'bg-cgray-800 hover:bg-cgray-600 font-semibold text-sm px-3.5 py-1.5 rounded-md ml-3'
+}" x-show="activeTab == 'videos'" class=''>
+    <div :style='$store.global.sidebar.show ? $store.global.contentWShort : $store.global.contentWFull'>
+        <div class='mt-4 ml-5 flex'>
+            <button
+                @click='activeBtn = 0'
+                :class='activeBtn === 0 ? activeClass : inactiveClass'
+                hx-get="{% url 'channel:get-videos' user=channel.user.username filter='latest' %}"
+                hx-target='#channel-videos-list'
+                hx-swap='outerHTML'
+                >
+                Más recientes
+            </button>
+            <button
+                @click='activeBtn = 1'
+                :class='activeBtn === 1 ? activeClass : inactiveClass'
+                hx-get="{% url 'channel:get-videos' user=channel.user.username filter='popular' %}"
+                hx-target='#channel-videos-list'
+                hx-swap='outerHTML'
+                >
+                Popular
+            </button>
+            <button
+                @click='activeBtn = 2'
+                :class='activeBtn === 2 ? activeClass : inactiveClass'
+                hx-get="{% url 'channel:get-videos' user=channel.user.username filter='previous' %}"
+                hx-target='#channel-videos-list'
+                hx-swap='outerHTML'
+            >
+                Más antiguos
+            </button>
+        </div>
+        {% include "pages/channel/components/videos-list.html" with video=video %}
+    </div>
+</div>

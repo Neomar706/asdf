@@ -1,0 +1,58 @@
+{% load truncate %}
+
+<div @click.away='window.location.reload()' id='modal' class='w-1/3 bg-cgray-900 rounded-lg shadow-lg p-4 text-white'>
+    <h3 class='flex flex-col items-center text-2xl uppercase'>
+        ¿Deseas eliminar esta playlist?
+        <span class='block text-white/75 text-xs mt-2'>
+            Los videos que contiene no serán eliminados
+        </span>
+    </h3>
+    <div class='mt-4'>
+        <div class="flex justify-center">
+            <a href="#ver_playlist_completa" class="group hover:bg-cgray-800 w-2/3 rounded-md">
+                <div class=" rounded-md overflow-hidden relative">
+                    <img src="/media/{{ playlist.thumbnail }}" alt="{{ playlist.title }}">
+                    <span class='absolute right-1 bottom-0.5 px-1.5 leading-6 rounded-md bg-black/75 text-sm select-none flex items-center'>
+                        <span class='w-4 h-4 mr-1'>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                <path fill='white' d="M22 7H2v1h20V7zm-9 5H2v-1h11v1zm0 4H2v-1h11v1zm2 3v-8l7 4-7 4z"></path>
+                            </svg> 
+                        </span>
+                        {% if playlist.videos.count == 0 %}
+                        Sin videos
+                        {% else %}
+                        {{ playlist.videos.count }} videos
+                        {% endif %}
+                    </span>
+                    <div class='absolute bg-black/75 group-hover:flex items-center justify-center uppercase top-0 left-0 w-full h-full hidden'>
+                        <span class='text-sm text-white/90 font-semibold tracking-wide select-none flex items-center'>
+                            <span class='block w-6 h-6'>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                    <path fill='white' d="m7 4 12 8-12 8V4z"></path>
+                                </svg>
+                            </span>
+                            Ver playlist completa
+                        </span>
+                    </div>
+                </div>
+                <h2 class="block py-2 text-center" title="{{ playlist.title }}">
+                    {{ playlist.title|truncate:40 }}
+                </h2>
+            </a>
+        </div>
+    </div>
+    <div class='mt-4 flex gap-4'>
+        <form action="{% url 'playlist:remove-playlist' playlist=playlist.pk %}" method='POST' class='w-full'>
+            {% csrf_token %}
+            <button tabindex='1' class='flex px-4 py-2 w-full justify-center hover:bg-cgray-600 rounded-md bg-cgray-800 font-semibold'>
+                Si, la quiero eliminar                    
+            </button>
+        </form>
+        <button tabindex='2' @click='window.location.reload()' class='flex px-4 py-2 w-full justify-center hover:bg-red-400 rounded-md bg-red-500 font-semibold'>
+            No, cancelar                  
+        </button>
+    </div>
+</div>
+<script>
+    window.addEventListener('keyup', e => e.key === 'Escape' && window.location.reload())
+</script>
