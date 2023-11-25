@@ -2,6 +2,7 @@
 
 {% load truncate %}
 {% load descriptionformat %}
+{% load durationformat %}
 
 
 {% block title %}
@@ -150,86 +151,28 @@ Youtube
                                     </div>
                                     <div class="mt-4">
                                         <ul class="">
+                                            {% for fs in video.final_screens.all %}
                                             <li class="mt-3">
-                                                <a href="#">
+                                                <a href="{% url 'watch:watch-video' pk=fs.pk %}">
                                                     <div class="flex">
                                                         <div class="w-28 h-16 bg-cyan-400 rounded-md overflow-hidden relative">
-                                                            <img class="w-full h-full object-cover" src="https://yt3.ggpht.com/proxy/8F7IZKms6N5VlNnYcj2AZntUmsKySAoGRIMqTRT7ApsdgBuUw6GG3hvc2fyZ0SElmsfi9EOdd64I02RGOfbAA4zi=s112-w112-h64-nd" alt="">
+                                                            <img class="w-full h-full object-cover" src="/media/{{ fs.thumbnail }}" alt="{{ fs.title }}">
                                                             <span class='absolute right-0.5 bottom-0.5 px-1 leading-5 rounded-md bg-black/75 text-xs select-none'>
-                                                                11:53
+                                                                {{ fs.duration|durationformat }}
                                                             </span>
                                                         </div>
                                                         <div class="ml-3">
                                                             <p>
-                                                                Magnus Carlsen mete un Bombazo Sacrificando TORRE!
+                                                                {{ fs.title }}
                                                             </p>
                                                             <span class="text-sm text-white/75">
-                                                                de ReyDama
+                                                                {{ fs.channel.name }}
                                                             </span>
                                                         </div>
                                                     </div>
                                                 </a>
                                             </li>
-                                            <li class="mt-3">
-                                                <a href="#">
-                                                    <div class="flex">
-                                                        <div class="w-28 h-16 bg-cyan-400 rounded-md overflow-hidden relative">
-                                                            <img class="w-full h-full object-cover" src="https://yt3.ggpht.com/proxy/8F7IZKms6N5VlNnYcj2AZntUmsKySAoGRIMqTRT7ApsdgBuUw6GG3hvc2fyZ0SElmsfi9EOdd64I02RGOfbAA4zi=s112-w112-h64-nd" alt="">
-                                                            <span class='absolute right-0.5 bottom-0.5 px-1 leading-5 rounded-md bg-black/75 text-xs select-none'>
-                                                                11:53
-                                                            </span>
-                                                        </div>
-                                                        <div class="ml-3">
-                                                            <p>
-                                                                Magnus Carlsen mete un Bombazo Sacrificando TORRE!
-                                                            </p>
-                                                            <span class="text-sm text-white/75">
-                                                                de ReyDama
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="mt-3">
-                                                <a href="#">
-                                                    <div class="flex">
-                                                        <div class="w-28 h-16 bg-cyan-400 rounded-md overflow-hidden relative">
-                                                            <img class="w-full h-full object-cover" src="https://yt3.ggpht.com/proxy/8F7IZKms6N5VlNnYcj2AZntUmsKySAoGRIMqTRT7ApsdgBuUw6GG3hvc2fyZ0SElmsfi9EOdd64I02RGOfbAA4zi=s112-w112-h64-nd" alt="">
-                                                            <span class='absolute right-0.5 bottom-0.5 px-1 leading-5 rounded-md bg-black/75 text-xs select-none'>
-                                                                11:53
-                                                            </span>
-                                                        </div>
-                                                        <div class="ml-3">
-                                                            <p>
-                                                                Magnus Carlsen mete un Bombazo Sacrificando TORRE!
-                                                            </p>
-                                                            <span class="text-sm text-white/75">
-                                                                de ReyDama
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li class="mt-3">
-                                                <a href="#">
-                                                    <div class="flex">
-                                                        <div class="w-28 h-16 bg-cyan-400 rounded-md overflow-hidden relative">
-                                                            <img class="w-full h-full object-cover" src="https://yt3.ggpht.com/proxy/8F7IZKms6N5VlNnYcj2AZntUmsKySAoGRIMqTRT7ApsdgBuUw6GG3hvc2fyZ0SElmsfi9EOdd64I02RGOfbAA4zi=s112-w112-h64-nd" alt="">
-                                                            <span class='absolute right-0.5 bottom-0.5 px-1 leading-5 rounded-md bg-black/75 text-xs select-none'>
-                                                                11:53
-                                                            </span>
-                                                        </div>
-                                                        <div class="ml-3">
-                                                            <p>
-                                                                Magnus Carlsen mete un Bombazo Sacrificando TORRE!
-                                                            </p>
-                                                            <span class="text-sm text-white/75">
-                                                                de ReyDama
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                                 </div>
@@ -251,7 +194,7 @@ Youtube
                     {% include "pages/watch/components/comments.html" %} 
                 </div>
             </div>
-            <div class="w-4/12 *bg-green-300">
+            <div class="w-4/12">
                 {% include "pages/watch/components/related-videos.html" %}
             </div>
         </div>
