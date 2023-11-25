@@ -48,6 +48,7 @@
                         </svg>
                     </button>
                     <div x-show="activeBtn{{ playlist.pk }}" @click.away="activeBtn{{ playlist.pk }} = false" class="absolute top-10 right-0 py-2 bg-cgray-800 rounded-md z-10">
+                        {% if channel.videos_qty != 0 %}
                         <button 
                             @click='$store.global.showModal = true' 
                             class='flex px-4 py-2 w-full hover:bg-cgray-600'
@@ -68,6 +69,7 @@
                                 {% endif %}
                             </p>
                         </button>
+                        {% endif %}
                         <button 
                             @click='$store.global.showModal = true' 
                             class='flex px-4 py-2 w-full hover:bg-cgray-600'

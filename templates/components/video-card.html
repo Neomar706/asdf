@@ -1,29 +1,50 @@
 {% load humanize %}
+{% load durationformat %}
+{% load truncate %}
 
-<div class='my-4 pr-4 w-full md:w-1/2 lg:w-1/3 xl:w-1/4'>
-    <div class='cursor-pointer'>
-        <div class='rounded-xl overflow-hidden'>
-            <a href="{% url 'watch' pk=video.pk %}">
-                <img src="/media/{{ video.thumbnail }}" alt="thumbnail" class="h-44 object-cover w-full" >
-            </a>
-        </div>
-        <div class='flex mt-3'>
-            <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class='rounded-full overflow-hidden w-10 h-10 shrink-0'>
-                <img src="/static/images/img-profile-1.jpg" alt="Profile 1">
-            </a>
-            <div class='ml-3'>
-                <a href="{% url 'watch' pk=video.pk %}">
-                    <p class='text-left line-clamp-2' title="{{ video.title }}">
-                        {{ video.title }}
-                    </p>
-                </a>
-                <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class='mt-2 text-sm text-zinc-400 hover:text-white'>
-                    {{ video.channel.user.get_full_name }}
-                </a>
-                <p class='ext-sm text-zinc-400'>
-                    {{ video.views.count }} vistas • {{ video.created_at|naturaltime }}
-                </p>
+<div class="h-full">
+    <div class='group relative'>
+        <button class='absolute right-1 top-0.5 p-0.5 rounded-md bg-black/75 hidden group-hover:inline-block cursor-pointer' @click='alert("asdfs")'>
+            <svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                <path fill='white' d="M14.97 16.95 10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM12 3c-4.96 0-9 4.04-9 9s4.04 9 9 9 9-4.04 9-9-4.04-9-9-9m0-1c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2z"></path>
+            </svg>
+        </button>
+        <a href="{% url 'watch:watch-video' pk=video.pk %}">
+            <img class='rounded-lg h-44 w-full object-cover' src="/media/{{ video.thumbnail }}" alt="{{ video.title }}">
+            <span class='absolute right-1 bottom-0.5 px-1.5 leading-6 rounded-md bg-black/75 text-sm select-none'>
+                {{ video.duration|durationformat }}
+            </span>
+        </a>
+    </div>
+    <div class='pt-2 flex'>
+        {% if not 'channel' in request.path %}
+        <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}">
+            <div class="w-9 h-9 rounded-full overflow-hidden shrink-0 mr-2">
+                <img class="w-full object-cover" src="{{ video.channel.avatar }}" alt="">
             </div>
-        </div>
+        </a>
+        {% endif %}
+        <a href="{% url 'watch:watch-video' pk=video.pk %}">
+            <div class="flex flex-col justify-between">
+                <h2 class="leading-5 font-semibold" title="{{ video.title }}">
+                    {{ video.title|truncate:60 }}
+                </h2>
+                <div class="mt-1">
+                    {% if not 'channel' in request.path %}
+                    <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class="leading-3 text-white/50 hover:text-white text-sm">
+                        {{ video.channel.name }}
+                    </a>
+                    {% endif %}
+                    <p class='text-white/50 text-sm'>
+                        <span class="leading-3">
+                            {{ video.views.count }} vistas • 
+                        </span>
+                        <span class="leading-3">
+                            {{ video.created_at|naturaltime }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </a>
     </div>
 </div>

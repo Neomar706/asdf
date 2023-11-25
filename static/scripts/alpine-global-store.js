@@ -2,8 +2,10 @@ document.addEventListener('alpine:init', () => {
     Alpine.store('global', {
         sidebar: {
             show: true,
+            showWatch: false,
             toggle(){
-                this.show = !this.show
+                if(!window.location.pathname.includes('watch')) this.show = !this.show
+                else this.showWatch = !this.showWatch
             }
         },
         keywords: {

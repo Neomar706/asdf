@@ -10,7 +10,7 @@ Youtube
 
 
 {% block navbar %}
-{% include 'components/navbar.html' with avatar_url=avatar_url user_id=user_id %}
+{% include 'components/navbar.html' with avatar_url=avatar_url %}
 {% endblock navbar %}
 
 {% block content %}
@@ -19,7 +19,7 @@ Youtube
     {% include 'components/sidebar.html' %}
 
     <div :class='$store.global.sidebar.show ? "ml-60" : "ml-20"' class="flex flex-col flex-1 overflow-x-hidden">
-        <div class='fixed bg-cgray-900'>
+        <div class='fixed bg-cgray-900 z-10'>
             <div :style='$store.global.sidebar.show ? $store.global.contentWShort : $store.global.contentWFull' class='w-full ml-4 mr-6 relative'>
                 <div id='keywords' class='overflow-x-hidden mr-5'>
                     <div x-show='!$store.global.keywords.start' class='flex justify-center absolute top-3 left-0'>
@@ -55,11 +55,8 @@ Youtube
             </div>
         </div>
 
-        <div :style='$store.global.sidebar.show ? $store.global.contentWShort : $store.global.contentWFull' class='w-full ml-4 mr-6 mt-14 flex flex-wrap'>
+        <div :style='$store.global.sidebar.show ? $store.global.contentWShort : $store.global.contentWFull' class='mt-20 mx-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4'>
             {% for video in videos %}
-            {% include 'components/video-card.html' with video=video %}
-            {% include 'components/video-card.html' with video=video %}
-            {% include 'components/video-card.html' with video=video %}
             {% include 'components/video-card.html' with video=video %}
             {% endfor %}
         </div>

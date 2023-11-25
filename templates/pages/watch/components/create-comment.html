@@ -1,0 +1,19 @@
+<div id="create_comment_container" x-data="{commentOpen: false}" class="flex">
+    <div class="rounded-full overflow-hidden shrink-0 w-6 h-6">
+        <img src="{{ channel.avatar }}" alt="{{ channel.name }}" draggable="false">
+    </div>
+    <div class="w-full">
+        <form action="{% url 'watch:create-comment' video=video.pk issuer_channel=channel.pk %}" method="POST" class="mx-3">
+            {% csrf_token %}
+            <input name="comment" @click="commentOpen = true" type="text" placeholder="Agrega un comentario..." class="w-full bg-transparent border-transparent outline-none border-b border-b-white/30 focus:border-none focus:outline-none">
+            <div x-show="commentOpen" style="display: none" class="flex gap-3 mt-3 justify-end">
+                <button @click="commentOpen = false; createCommentShow = false; createCommentDropdownShow = false" type="button" class="h-8 px-3 hover:bg-cgray-600 rounded-full cursor-pointer">
+                    Cancelar
+                </button>
+                <button type="submit" class="flex items-center px-3 py-1 rounded-full bg-cgray-800 hover:bg-blue-400 hover:text-black cursor-pointer">
+                    Comentar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
