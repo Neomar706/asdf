@@ -1,0 +1,100 @@
+{% load humanize %}
+
+{% if comments %}
+{% for comment in comments %}
+<div class="flex mt-4">
+    <div class="w-10 h-10 rounded-full overflow-hidden shrink-0">
+        <img src="{{ comment.channel.avatar }}" alt="{{ comment.channel.name }}" draggable="false">
+    </div>
+    <div class="w-full ml-3">
+        <div class="flex justify-between">
+            <div class="w-full">
+                <div class="text-sm">
+                    <a href="{% url 'channel:main' user=comment.channel.user.username tab='main' %}">
+                        @{{ comment.channel.name }}
+                    </a>
+                    <span class="text-white/50">
+                        {{ comment.created_at|naturaltime }}
+                    </span>
+                </div>
+                <p class="text-sm">
+                    {{ comment.content }}
+                </p>
+                <div class="flex mt-1">
+                    <form action="{% url 'watch:toggle-like-comment' comment=comment.pk %}" method="POST" class="flex items-center">
+                        {% csrf_token %}
+                        <input type="hidden" name="clicked" value="like">
+                        <input type="hidden" name="path" value="{{ request.path }}">
+                        <button class="flex items-center justify-center hover:bg-cgray-600 p-1.5 rounded-full">
+                            <div class="flex items-center">
+                                {% if user.is_authenticated and channel in comment.likes.all %}
+                                <box-icon type="solid" name="like" color="white" size="20px"></box-icon>
+                                {% else %}
+                                <box-icon name="like" color="white" size="20px"></box-icon>
+                                {% endif %}
+                            </div>
+                        </button>
+                        <span class="text-xs">
+                            {{ comment.likes.count }}
+                        </span> 
+                    </form>
+                    <form action="{% url 'watch:toggle-like-comment' comment=comment.pk %}" method="POST" class="flex items-center ml-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="clicked" value="dislike">
+                        <input type="hidden" name="path" value="{{ request.path }}">
+                        <button class="flex items-center justify-center hover:bg-cgray-600 p-1.5 rounded-full">
+                            {% if user.is_authenticated and channel in comment.dislikes.all %}
+                            <box-icon type="solid" name='dislike' color="white" size="20px"></box-icon>
+                            {% else %}
+                            <box-icon name='dislike' color="white" size="20px"></box-icon>
+                            {% endif %}
+                        </button>
+                        <span class="text-xs">
+                            {{ comment.dislikes.count }}
+                        </span> 
+                    </form>
+                </div>
+            </div>
+            <div x-data="{
+                open: false,
+            }" class="relative">
+                <button @click="open = true" class="w-6 h-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                        <path fill="white" d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"></path>
+                    </svg>
+                </button>
+                <div x-show="open" @click.away="open = false" class="absolute top-6 right-0 py-2 bg-cgray-800 rounded-md z-10">
+                    {% if channel == comment.channel %}
+                    <button class='flex px-4 py-2 w-full hover:bg-cgray-600'>
+                        <div class='w-6 h-6'>
+                            <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope tp-yt-iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g width="24" height="24" viewBox="0 0 24 24" class="style-scope tp-yt-iron-icon">
+                                <path fill='white' d="M14.06 7.6L16.4 9.94L6.34 20H4V17.66L14.06 7.6ZM14.06 6.19L3 17.25V21H6.75L17.81 9.94L14.06 6.19ZM17.61 4.05L19.98 6.42L18.84 7.56L16.47 5.19L17.61 4.05ZM17.61 2.63L15.06 5.18L18.85 8.97001L21.4 6.42L17.61 2.63Z" class="style-scope tp-yt-iron-icon"></path></g>
+                            </svg>
+                        </div>
+                        <p class='ml-4'>Actualizar</p>
+                    </button>
+                    <button class='flex px-4 py-2 w-full hover:bg-cgray-600'>
+                        <div class='w-6 h-6'>
+                            <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope tp-yt-iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g class="style-scope tp-yt-iron-icon">
+                                <path fill='white' d="M11,17H9V8h2V17z M15,8h-2v9h2V8z M19,4v1h-1v16H6V5H5V4h4V3h6v1H19z M17,5H7v15h10V5z" class="style-scope tp-yt-iron-icon"></path></g>
+                            </svg>
+                        </div>
+                        <p class='ml-4'>Eliminar</p>
+                    </button>
+                    {% else %}
+                    <button class='flex px-4 py-2 w-full hover:bg-cgray-600'>
+                        <div class='w-6 h-6'>
+                            <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                <path fill="white" d="m13.18 4 .24 1.2.16.8H19v7h-5.18l-.24-1.2-.16-.8H6V4h7.18M14 3H5v18h1v-9h6.6l.4 2h7V5h-5.6L14 3z"></path>
+                            </svg>
+                        </div>
+                        <p class='ml-4'>Denunciar</p>
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}

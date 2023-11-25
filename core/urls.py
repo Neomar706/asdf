@@ -4,7 +4,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from .views import HomeView
-from apps.channel.views import watch_video
 
 
 urlpatterns = [
@@ -14,7 +13,7 @@ urlpatterns = [
     path('account/', include('allauth.urls')),
     path('channel/', include('apps.channel.urls', namespace='channel')),
     path('playlist/', include('apps.playlist.urls', namespace='playlist')),
-    path('watch/<pk>/', watch_video, name='watch')
+    path('watch/', include('apps.watch.urls', namespace='watch'))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

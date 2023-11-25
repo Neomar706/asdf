@@ -33,6 +33,10 @@
                 Más antiguos
             </button>
         </div>
-        {% include "pages/channel/components/videos-list.html" with video=video %}
+        <div id='channel-videos-list' class='mt-4 ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4'>
+            {% for video in videos %}
+            {% include "components/video-card.html" with video=video %}
+            {% endfor %}
+        </div>
     </div>
 </div>

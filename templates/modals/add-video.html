@@ -40,7 +40,7 @@
                 {{ form.thumbnail }}
             </div>
             {% if videos.count %}
-            <div class="mt-4 bg-cgray-800 rounded-md p-4">
+            <div class="mt-4 bg-[#181818] rounded-md p-4">
                 <div class="flex justify-center font-semibold text-white uppercase leading-3 mb-4">
                     Selecciona las pantallas finales, Máximo 4
                     <span class="text-zinc-400">&nbsp;(opcional)</span>
@@ -48,8 +48,9 @@
                 <div class="grid grid-cols-4 gap-4">
                     {% for video in videos %}
                     <div x-data="{selected: false}" @click="
-                        if(finalScreensIds.length === 4 && !finalScreensIds.includes({{ video.pk }})) return;
-                        selected = !selected; finalScreensIds.includes({{ video.pk }}) 
+                        if(finalScreensIds.length === 4 && !finalScreensIds.includes({{ video.pk }})) return
+                        selected = !selected
+                        finalScreensIds.includes({{ video.pk }}) 
                             ? finalScreensIds = finalScreensIds.filter(id => id !== {{ video.pk }}) 
                             : finalScreensIds.push({{ video.pk }})
                         " class="flex flex-col bg-cgray-900 rounded-lg cursor-pointer">

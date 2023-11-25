@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% load truncate %}
+{% load descriptionformat %}
+
+
+{% block title %}
+Youtube
+{% endblock title %}
+
+{% block extra_head %}
+{% endblock extra_head %}
+
+
+{% block navbar %}
+{% include 'components/navbar.html' with avatar_url=avatar_url %}
+{% include "pages/watch/components/sidebar.html" %}
+{% endblock navbar %}
+
+{% block content %}
+<div class='mt-12 h-content text-white overflow-y-scroll scrollbar always-scrollbar'>
+    <div class="container mx-auto">
+        <div class="p-4 gap-4 flex">
+            <div class='w-8/12'>
+                <div class="rounded-2xl overflow-hidden shadow-white/20 shadow-md">
+                    {% include "pages/watch/components/videoplayer.html" with slug=video.video thumbnail=video.thumbnail %}
+                </div>
+                <h1 class='text-xl my-4 font-semibold' title="{{ video.title }}">
+                    {{ video.title|truncate:160 }}
+                </h1>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10">
+                                <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class="shrink-0">
+                                    <img class="rounded-full" src="{{ video.channel.avatar }}" alt="Profile 1">
+                                </a>
+                            </div>
+                            <div class="ml-4">
+                                <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class="font-semibold">
+                                    {{ video.channel.name }}
+                                </a>
+                                <div class="text-sm text-white/50">
+                                    {% if video.channel.suscribers.count == 0 %}
+                                    Sin suscriptores
+                                    {% elif video.channel.suscribers.count == 1 %}
+                                    {{ video.channel.suscribers.count }} suscriptor
+                                    {% else %}
+                                    {{ video.channel.suscribers.count }} suscriptores
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex font-semibold ml-6">
+                            {% if video.channel.user != user %}
+                            
+                            {% with channel=video.channel %}
+                            {% include "pages/channel/components/suscription.html" %}
+                            {% endwith %}
+
+                            {% else %}
+                            
+                            <button class='bg-cgray-800 hover:bg-cgray-600 px-3.5 py-1.5 rounded-full ml-3 flex'>
+                                <div class="w-6 h-6 mr-2">
+                                    <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope tp-yt-iron-icon" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g width="24" height="24" viewBox="0 0 24 24" class="style-scope tp-yt-iron-icon">
+                                        <path fill="white" d="M14.06 7.6L16.4 9.94L6.34 20H4V17.66L14.06 7.6ZM14.06 6.19L3 17.25V21H6.75L17.81 9.94L14.06 6.19ZM17.61 4.05L19.98 6.42L18.84 7.56L16.47 5.19L17.61 4.05ZM17.61 2.63L15.06 5.18L18.85 8.97001L21.4 6.42L17.61 2.63Z" class="style-scope tp-yt-iron-icon"></path></g>
+                                    </svg>
+                                </div>
+                                Actualizar
+                            </button>
+
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        {% include "pages/watch/components/likes-dislikes.html" %}
+                        <a href="/media/{{ video.video }}" class="bg-cgray-800 hover:bg-cgray-600 px-3.5 py-1.5 rounded-full ml-3 flex" download>
+                            <div class="w-6 h-6 mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                    <path fill="white" d="M17 18v1H6v-1h11zm-.5-6.6-.7-.7-3.8 3.7V4h-1v10.4l-3.8-3.8-.7.7 5 5 5-4.9z"></path>
+                                </svg>
+                            </div>
+                            Descargar
+                        </a>
+                        <button 
+                            hx-get="{% url 'watch:toggle-like' video=video.pk %}" 
+                            hx-target='#likes_dislikes' 
+                            hx-swap='outerHTML' class='bg-cgray-800 hover:bg-cgray-600 px-3.5 py-1.5 rounded-full ml-3 flex'>
+                            <div class="w-6 h-6 mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                    <path fill="white" d="M22 13h-4v4h-2v-4h-4v-2h4V7h2v4h4v2zm-8-6H2v1h12V7zM2 12h8v-1H2v1zm0 4h8v-1H2v1z"></path>
+                                </svg>
+                            </div>
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+                <div x-data="{open: false}" :class="!open && 'hover:bg-cgray-600 cursor-pointer group'" class="w-full mt-4 rounded-lg bg-cgray-700 p-3 relative">
+                    <div @click="open = true" class="relative">
+                        <div class="font-bold text-sm">
+                            <p class="inline-block">
+                                {{ video.views.count }} vistas
+                            </p>
+                            <p class="inline-block ml-1">
+                                {{ video.created_at|date:"j M Y" }}
+                            </p>
+                        </div>
+                        <div :class="!open && 'h-[4.4rem] overflow-hidden'">
+                            <p class="text-[0.95rem]">
+                                {{video.description|description_format}}
+                            </p>
+                            <div class="mt-8">
+                                <div class="w-full lg:w-4/5">
+                                    <div class="flex items-center">
+                                        <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class="rounded-full overflow-hidden w-16 h-16">
+                                            <img class="" src="{{ video.channel.avatar }}" alt="">
+                                        </a>
+                                        <div class="ml-3">
+                                            <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class="font-semibold">
+                                                {{ video.channel.name }}
+                                            </a>
+                                            <div class="text-sm text-zinc-400">
+                                                {% if video.channel.suscribers.count == 0 %}
+                                                Sin suscriptores
+                                                {% elif video.channel.suscribers.count == 1 %}
+                                                {{ video.channel.suscribers.count }} suscriptor
+                                                {% else %}
+                                                {{ video.channel.suscribers.count }} suscriptores
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 flex gap-3">
+                                        <a href="{% url 'channel:main' user=video.channel.user.username tab='videos' %}" class="w-full rounded-full text-center border border-white/20 h-9 hover:bg-cgray-600 flex items-center justify-center">
+                                            <div class="w-6 h-6 mr-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                                    <path fill="white" d="m10 8 6 4-6 4V8zm11-5v18H3V3h18zm-1 1H4v16h16V4z"></path>
+                                                </svg>
+                                            </div>
+                                            Videos
+                                        </a>
+                                        <a href="{% url 'channel:main' user=video.channel.user.username tab='info' %}" class="w-full rounded-full text-center border border-white/20 h-9 hover:bg-cgray-600 flex items-center justify-center">
+                                            <div class="w-6 h-6 mr-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                                    <path fill="white" d="M3,3v18h18V3H3z M4.99,20c0.39-2.62,2.38-5.1,7.01-5.1s6.62,2.48,7.01,5.1H4.99z M9,10c0-1.65,1.35-3,3-3s3,1.35,3,3 c0,1.65-1.35,3-3,3S9,11.65,9,10z M12.72,13.93C14.58,13.59,16,11.96,16,10c0-2.21-1.79-4-4-4c-2.21,0-4,1.79-4,4 c0,1.96,1.42,3.59,3.28,3.93c-4.42,0.25-6.84,2.8-7.28,6V4h16v15.93C19.56,16.73,17.14,14.18,12.72,13.93z"></path>
+                                                </svg>
+                                            </div>
+                                            Información
+                                        </a>
+                                    </div>
+                                    <div class="mt-4">
+                                        <ul class="">
+                                            <li class="mt-3">
+                                                <a href="#">
+                                                    <div class="flex">
+                                                        <div class="w-28 h-16 bg-cyan-400 rounded-md overflow-hidden relative">
+                                                            <img class="w-full h-full object-cover" src="https://yt3.ggpht.com/proxy/8F7IZKms6N5VlNnYcj2AZntUmsKySAoGRIMqTRT7ApsdgBuUw6GG3hvc2fyZ0SElmsfi9EOdd64I02RGOfbAA4zi=s112-w112-h64-nd" alt="">
+                                                            <span class='absolute right-0.5 bottom-0.5 px-1 leading-5 rounded-md bg-black/75 text-xs select-none'>
+                                                                11:53
+                                                            </span>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <p>
+                                                                Magnus Carlsen mete un Bombazo Sacrificando TORRE!
+                                                            </p>
+                                                            <span class="text-sm text-white/75">
+                                                                de ReyDama
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li class="mt-3">
+                                                <a href="#">
+                                                    <div class="flex">
+                                                        <div class="w-28 h-16 bg-cyan-400 rounded-md overflow-hidden relative">
+                                                            <img class="w-full h-full object-cover" src="https://yt3.ggpht.com/proxy/8F7IZKms6N5VlNnYcj2AZntUmsKySAoGRIMqTRT7ApsdgBuUw6GG3hvc2fyZ0SElmsfi9EOdd64I02RGOfbAA4zi=s112-w112-h64-nd" alt="">
+                                                            <span class='absolute right-0.5 bottom-0.5 px-1 leading-5 rounded-md bg-black/75 text-xs select-none'>
+                                                                11:53
+                                                            </span>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <p>
+                                                                Magnus Carlsen mete un Bombazo Sacrificando TORRE!
+                                                            </p>
+                                                            <span class="text-sm text-white/75">
+                                                                de ReyDama
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li class="mt-3">
+                                                <a href="#">
+                                                    <div class="flex">
+                                                        <div class="w-28 h-16 bg-cyan-400 rounded-md overflow-hidden relative">
+                                                            <img class="w-full h-full object-cover" src="https://yt3.ggpht.com/proxy/8F7IZKms6N5VlNnYcj2AZntUmsKySAoGRIMqTRT7ApsdgBuUw6GG3hvc2fyZ0SElmsfi9EOdd64I02RGOfbAA4zi=s112-w112-h64-nd" alt="">
+                                                            <span class='absolute right-0.5 bottom-0.5 px-1 leading-5 rounded-md bg-black/75 text-xs select-none'>
+                                                                11:53
+                                                            </span>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <p>
+                                                                Magnus Carlsen mete un Bombazo Sacrificando TORRE!
+                                                            </p>
+                                                            <span class="text-sm text-white/75">
+                                                                de ReyDama
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li class="mt-3">
+                                                <a href="#">
+                                                    <div class="flex">
+                                                        <div class="w-28 h-16 bg-cyan-400 rounded-md overflow-hidden relative">
+                                                            <img class="w-full h-full object-cover" src="https://yt3.ggpht.com/proxy/8F7IZKms6N5VlNnYcj2AZntUmsKySAoGRIMqTRT7ApsdgBuUw6GG3hvc2fyZ0SElmsfi9EOdd64I02RGOfbAA4zi=s112-w112-h64-nd" alt="">
+                                                            <span class='absolute right-0.5 bottom-0.5 px-1 leading-5 rounded-md bg-black/75 text-xs select-none'>
+                                                                11:53
+                                                            </span>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <p>
+                                                                Magnus Carlsen mete un Bombazo Sacrificando TORRE!
+                                                            </p>
+                                                            <span class="text-sm text-white/75">
+                                                                de ReyDama
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <button x-show="!open" :class="!open ? 'absolute right-0 bottom-0 px-5' : 'mt-2 inline-block'" class="bg-cgray-700 cursor-pointer group-hover:bg-cgray-600 font-semibold">
+                                ...más
+                            </button>
+                        </div>
+                    </div>
+                    <button x-show="open" @click="open = false" :class="!open ? 'absolute right-0 bottom-0 px-5' : 'mt-4 inline-block'" class="bg-cgray-700 cursor-pointer group-hover:bg-cgray-600 font-semibold">
+                        Mostrar menos
+                    </button> 
+                </div>
+                <div class="mt-4 h-40">
+                    <p class="text-xl font-bold mb-4">
+                        {{ comments.count }} comentarios
+                    </p>
+                    {% include "pages/watch/components/create-comment.html" %}                    
+                    {% include "pages/watch/components/comments.html" %} 
+                </div>
+            </div>
+            <div class="w-4/12 *bg-green-300">
+                {% include "pages/watch/components/related-videos.html" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer %}
+{% endblock footer %}
+
+{% block javascript %}
+<script src="/static/scripts/videoplay.js"></script>
+{% endblock javascript %}

@@ -18,7 +18,7 @@
 
 
 {% block navbar %}
-{% include 'components/navbar.html' with avatar_url=logged_avatar_url %}
+{% include 'components/navbar.html' with avatar_url=avatar_url %}
 {% endblock navbar %}
 
 
@@ -90,7 +90,8 @@
                     <div class='flex font-semibold -mt-16 mx-4'>
                         {% if user.username != channel.user.username %}
                         {% include "pages/channel/components/suscription.html" %}
-                        {% elif channel.videos_qty > 0 %}
+                        {% else %}
+                            {% if channel.videos_qty > 0 %}
                             <button 
                                 @click='$store.global.showModal = true' 
                                 class='bg-cgray-800 hover:bg-cgray-600 px-3.5 py-1.5 rounded-full'
@@ -103,6 +104,7 @@
                             <button class='bg-cgray-800 hover:bg-cgray-600 px-3.5 py-1.5 rounded-full ml-3'>
                                 Administrar videos
                             </button>
+                            {% endif %}
                             <button 
                                 @click='$store.global.showModal = true' 
                                 class='bg-cgray-800 hover:bg-cgray-600 px-3.5 py-1.5 rounded-full ml-3'
@@ -147,4 +149,5 @@
 <script src="/static/scripts/channel-tabs.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 <script src="/static/scripts/swiper.js"></script>
+<script src="/static/scripts/videoplay.js"></script>
 {% endblock javascript %}
