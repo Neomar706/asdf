@@ -13,9 +13,9 @@ class AddVideoForm(forms.ModelForm):
     )
     description = forms.CharField(
         widget=forms.Textarea(attrs={
-            'class': 'placeholder:font-medium focus:px-5 px-5 pb-3 bg-[#181818] outline-none border-cgray-800 focus:border-none focus:outline-none text-white w-full rounded-md tracking-wide resize-none',
+            'class': 'placeholder:font-medium focus:px-5 px-5 pb-3 bg-[#181818] outline-none border-cgray-800 focus:border-none focus:outline-none text-white w-full rounded-md tracking-wide no-resize scrollbar always-scrollbar',
             'placeholder': 'Descripción',
-            'tabindex': '3',
+            'tabindex': '3'
         })
     )
     thumbnail = forms.ImageField(

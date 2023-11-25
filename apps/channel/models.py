@@ -57,6 +57,7 @@ class Video(models.Model):
     comments = models.ManyToManyField(Channel, blank=True, related_name='video_comments')
     playlists = models.ManyToManyField(Playlist, blank=True, related_name='video_playlists')
     video = models.FileField(upload_to=video_directory_path, default='image_1.jpg')
+    final_screens = models.ManyToManyField('self', null=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 

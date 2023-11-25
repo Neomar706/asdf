@@ -11,6 +11,8 @@ User = get_user_model()
 from moviepy.editor import VideoFileClip
 from datetime import timedelta
 from apps.playlist.models import Playlist
+from urllib.parse import unquote
+from json import loads as load_json
 
 
 class ChannelView(View):
@@ -69,6 +71,7 @@ class AddVideo(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         playlists = Playlist.objects.filter(channel__user=request.user).values_list('pk', 'title')
         form = AddVideoForm()
+        videos = Video.objects.filter(channel__user=request.user).all()
 
         playlists_list = []
         for playlist in playlists:
@@ -80,6 +83,7 @@ class AddVideo(LoginRequiredMixin, View):
         context = {}
         context['form'] = form
         context['playlists'] = playlists_list
+        context['videos'] = videos
         print(playlists)
         return render(request, template_name='modals/add-video.html', context=context)
 
@@ -87,6 +91,9 @@ class AddVideo(LoginRequiredMixin, View):
         channel = Channel.objects.get(user=request.user, is_active=True)          
         form = AddVideoForm(request.POST, request.FILES)
         playlist_pk = request.POST['playlist']
+        final_screens_pks = request.POST['final_screens_ids']
+        decode_uri  = unquote(final_screens_pks)
+        data        = load_json(decode_uri)
 
         if form.is_valid():
             video = request.FILES['video']
@@ -97,6 +104,10 @@ class AddVideo(LoginRequiredMixin, View):
             new_video.duration = timedelta(seconds=video_duration)
             new_video.channel = channel
             new_video.save()
+
+            for pk in data:
+                video = Video.objects.get(pk=pk)
+                new_video.final_screens.add(video)
 
             if playlist_pk:
                 playlist = Playlist.objects.get(pk=playlist_pk)
