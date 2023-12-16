@@ -23,7 +23,7 @@
 
 
 {% block content %}
-<div id='main-channel-page' class='flex text-white mt-12 h-content overflow-y-scroll scrollbar always-scrollbar'>
+<div id='main-channel-page' class='flex text-white mt-14 h-content overflow-y-scroll scrollbar always-scrollbar'>
     {% include 'components/sidebar.html' %}
     <div :class="$store.global.sidebar.show ? 'ml-60' : 'ml-20'" :style='$store.global.sidebar.show ? $store.global.contentWShort : $store.global.contentWFull' class='flex flex-col flex-1'>
         <div x-data="{
