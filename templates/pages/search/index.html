@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+{{ request.GET.query }} - Youtube
+{% endblock title %}
+
+{% block extra_head %}
+{% endblock extra_head %}
+
+
+{% block navbar %}
+{% include 'components/navbar.html' with avatar_url=avatar_url %}
+{% endblock navbar %}
+
+{% block content %}
+<div class='flex text-white mt-14'>
+    {% include 'components/sidebar.html' %}
+    <div :class='$store.global.sidebar.show ? "ml-60" : "ml-20"' class="flex flex-col flex-1 overflow-x-hidden overflow-y-auto scrollbar always-scrollbar h-content">
+        <div class="flex justify-center">
+            <div class="w-10/12 max-w-[70.31rem]">
+                <div class="p-4 h-full flex flex-col">
+                    <div class="flex justify-between">
+                        <div class="flex items-center">
+                            <div class='flex items-center' x-data='{
+                                keywords: [
+                                    {label: "Todo",                  filter: "all",          active: "all"          === "{{ request.GET.filter }}"},
+                                    {label: "Sin mirar",             filter: "unviewed",     active: "unviewed"     === "{{ request.GET.filter }}"},
+                                    {label: "Vistos",                filter: "viewed",       active: "viewed"       === "{{ request.GET.filter }}"},
+                                    {label: "Subidos recientemente", filter: "recent",       active: "recent"       === "{{ request.GET.filter }}"},
+                                    {label: "Suscripciones",         filter: "suscriptions", active: "suscriptions" === "{{ request.GET.filter }}"},
+                                ]
+                            }'>
+                                <template x-for='keyword in keywords'>
+                                    <a  x-text='keyword.label' 
+                                        :href="'/search/results?query={{ request.GET.query }}&filter=' + keyword.filter"
+                                        :class='keyword.active ? "bg-white text-black" : "bg-cgray-800 hover:bg-cgray-600 text-white"' 
+                                        class='py-[0.3rem] px-3 rounded-lg mx-1 truncate flex justify-center min-w-fit select-none text-sm font-semibold'
+                                    ></a>
+                                </template>
+                            </div>
+                        </div>
+                        <button class="flex items-center px-4 hover:bg-cgray-600 rounded-full text-sm font-semibold">
+                            Filtros
+                            <div class="ml-2 w-6 h-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                    <path fill="white" d="M15 17h6v1h-6v-1zm-4 0H3v1h8v2h1v-5h-1v2zm3-9h1V3h-1v2H3v1h11v2zm4-3v1h3V5h-3zM6 14h1V9H6v2H3v1h3v2zm4-2h11v-1H10v1z"></path>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                    {% if videos.count %}
+                    {% include "pages/search/components/found-videos.html" %}
+                    {% else %}
+                    <div class="w-full h-content flex items-center justify-center text-xl font-semibold text-zinc-400">
+                        <span class="-mt-16">
+                            No se encontraron resultados
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer %}
+{% endblock footer %}
+
+{% block javascript %}
+{% endblock javascript %}

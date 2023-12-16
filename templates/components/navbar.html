@@ -35,8 +35,9 @@
 		<div class='hidden md:col-span-2 md:flex justify-center h-full'>
 			<div class='hidden md:flex w-full mx-12 lg:mx-16 justify-center items-center'>
 				<div class='flex w-11/12 h-10 rounded-full content-center relative'>
-					<form action='' method='GET' class='w-full h-full flex relative'>
-						<input type='text' placeholder='Buscar' class='placeholder:font-medium rounded-full focus:px-5 px-5 pb-3 h-full bg-[#121212] outline-none border-cgray-800 focus:border-none focus:outline-none text-white w-full pr-20 focus:pr-20'>
+					<form action="{% url 'search:main' %}" method='GET' class='w-full h-full flex relative'>
+						<input type='text' name='query' placeholder='Buscar' class='placeholder:font-medium rounded-full focus:px-5 px-5 pb-3 h-full bg-[#121212] outline-none border-cgray-800 focus:border-none focus:outline-none text-white w-full pr-20 focus:pr-20'>
+						<input type="hidden" name="filter" value="all">
 						<button type='submit' class='w-16 h-full px-4 bg-cgray-800 hover:bg-cgray-600 border-white rounded-r-full flex justify-center items-center absolute top-0 right-0'>
 							<div class='flex w-6 h-6'>
 								<svg enable-background='new 0 0 24 24' height='24' viewBox='0 0 24 24' width='24' focusable='false' style='pointer-events: none; display: block; width: 100%; height: 100%;'>

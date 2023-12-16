@@ -13,7 +13,8 @@ urlpatterns = [
     path('account/', include('allauth.urls')),
     path('channel/', include('apps.channel.urls', namespace='channel')),
     path('playlist/', include('apps.playlist.urls', namespace='playlist')),
-    path('watch/', include('apps.watch.urls', namespace='watch'))
+    path('watch/', include('apps.watch.urls', namespace='watch')),
+    path('search/', include('apps.search.urls', namespace='search'))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

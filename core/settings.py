@@ -42,7 +42,8 @@ THIRD_PARTY_APPS = [
 PROJECT_APPS = [
     'apps.channel',
     'apps.playlist',
-    'apps.watch'
+    'apps.watch',
+    'apps.search',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
