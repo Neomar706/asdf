@@ -1,0 +1,107 @@
+{% load durationformat %}
+{% load truncate %}
+
+{% for video in videos_his.videos %}
+<div class="flex h-[138px] group mb-4">
+    <div class="w-[246px] h-[138px] shrink-0 rounded-lg overflow-hidden relative">
+        <a href="{% url 'watch:watch-video' pk=video.pk %}">
+            <img class="w-full h-full object-cover" src="/media/{{ video.thumbnail }}" alt="{{ video.title }}">
+            <span class='absolute right-1 bottom-0.5 px-1.5 leading-6 rounded-md bg-black/75 text-sm select-none'>
+                {{ video.duration|durationformat }}
+            </span>
+        </a>
+        <button @click='alert("asdfs")' class='absolute right-1 top-1 p-0.5 rounded-md bg-black/75 hidden group-hover:inline-block cursor-pointer'>
+            <svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                <path fill='white' d="M14.97 16.95 10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM12 3c-4.96 0-9 4.04-9 9s4.04 9 9 9 9-4.04 9-9-4.04-9-9-9m0-1c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2z"></path>
+            </svg>
+        </button>
+    </div>
+    <div class="h-full ml-3 flex flex-col">
+        <div class="pr-32 relative">
+            <a href="{% url 'watch:watch-video' pk=video.pk %}">
+                <h2 class="text-lg font-[700] leading-6">
+                    {{ video.title }}
+                </h2>
+            </a>
+            <div class="flex flex-col">
+                <a href="{% url 'channel:main' user=video.channel.user.username tab='main' %}" class="text-sm font-semibold text-white/60 hover:text-white/80">
+                    {{ video.channel.name }}
+                </a>
+            </div>
+            <div x-data="{open: false}" :class="open && 'opacity-100'" class="absolute top-0 right-0 flex gap-4 mx-4 opacity-0 group-hover:opacity-100">
+                <form action="{% url 'history:remove' pk=video.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button class="w-9 h-9 rounded-full hover:bg-cgray-600 flex items-center justify-center cursor-pointer">
+                        <div class="w-5 h-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                <path fill="white" d="m12.71 12 8.15 8.15-.71.71L12 12.71l-8.15 8.15-.71-.71L11.29 12 3.15 3.85l.71-.71L12 11.29l8.15-8.15.71.71L12.71 12z"></path>
+                            </svg>
+                        </div>
+                    </button>
+                </form>
+                <div class="relative">
+                    <button @click="open = true" class="w-9 h-9">
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                <path fill="white" d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"></path>
+                            </svg>
+                        </div>
+                    </button>
+                    <div x-show="open" @click.away="open = false" class="absolute top-9 right-0 bg-cgray-800 rounded-md z-10 w-64">
+                        <div class="my-2">
+                            <button class='flex px-4 py-2 w-full hover:bg-cgray-600'>
+                                <div class='w-6 h-6 shrink-0'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                        <path fill="white" d="M21 16h-7v-1h7v1zm0-5H9v1h12v-1zm0-4H3v1h18V7zm-11 8-7-4v8l7-4z"></path>
+                                    </svg>
+                                </div>
+                                <span class='ml-4'>Agregar a la fila</span>
+                            </button>
+                            <button class='flex px-4 py-2 w-full hover:bg-cgray-600'>
+                                <div class='w-6 h-6 shrink-0'>
+                                    <svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                        <path fill='white' d="M14.97 16.95 10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM12 3c-4.96 0-9 4.04-9 9s4.04 9 9 9 9-4.04 9-9-4.04-9-9-9m0-1c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2z"></path>
+                                    </svg>
+                                </div>
+                                <span class='ml-4'>Guardar en Ver más tarde</span>
+                            </button>
+                            <button class='flex px-4 py-2 w-full hover:bg-cgray-600'>
+                                <div class='w-6 h-6 shrink-0'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                        <path fill="white" d="M22 13h-4v4h-2v-4h-4v-2h4V7h2v4h4v2zm-8-6H2v1h12V7zM2 12h8v-1H2v1zm0 4h8v-1H2v1z"></path>
+                                    </svg>
+                                </div>
+                                <span class='ml-4'>Guardar en una playlist</span>
+                            </button>
+                            <button class='flex px-4 py-2 w-full hover:bg-cgray-600'>
+                                <div class='w-6 h-6 shrink-0'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                        <path fill="white" d="M17 18v1H6v-1h11zm-.5-6.6-.7-.7-3.8 3.7V4h-1v10.4l-3.8-3.8-.7.7 5 5 5-4.9z"></path>
+                                    </svg>
+                                </div>
+                                <span class='ml-4'>Descargar</span>
+                            </button>
+                            <button class='flex px-4 py-2 w-full hover:bg-cgray-600'>
+                                <div class='w-6 h-6 shrink-0'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                        <path fill="white" d="M15 5.63 20.66 12 15 18.37V14h-1c-3.96 0-7.14 1-9.75 3.09 1.84-4.07 5.11-6.4 9.89-7.1l.86-.13V5.63M14 3v6C6.22 10.13 3.11 15.33 2 21c2.78-3.97 6.44-6 12-6v6l8-9-8-9z"></path>
+                                    </svg>
+                                </div>
+                                <span class='ml-4'>Compartir</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 relative group/text">
+            <p class="text-sm font-semibold text-white/60">
+                {{ video.description|truncate:160 }}
+            </p>
+            <div class="inline-block absolute left-1/2 -translate-x-1/2 text-xs bg-cgray-600 font-semibold p-2 rounded-md opacity-0 group-hover/text:opacity-100 transition-all ease-in-out delay-75 select-none">
+                De la descripción del video
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

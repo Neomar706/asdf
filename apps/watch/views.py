@@ -7,6 +7,7 @@ from allauth.socialaccount.models import SocialAccount
 from apps.channel.models import Channel, Video
 from apps.channel.views import suscription
 from .models import Comment
+from apps.history.models import History
 
 
 class WatchVideo(View):
@@ -27,9 +28,13 @@ class WatchVideo(View):
         if request.user.is_authenticated:
             social_account = SocialAccount.objects.get(user=request.user, provider='google')
             channel_logged = Channel.objects.get(user=request.user, is_active=True)
+            history = History.objects.get(channel=channel_logged)
 
             if not channel_logged in video.views.all():
                 video.views.add(channel_logged)
+
+            if not channel_logged.is_paused_history and not video in history.videos.all():
+                history.videos.add(video)
 
             context['channel']    = channel_logged
             context['avatar_url'] = social_account.get_avatar_url()

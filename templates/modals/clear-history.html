@@ -1,0 +1,26 @@
+<div @click.away='window.location.reload()' id='modal' class='w-2/5 flex flex-col bg-cgray-800 rounded-lg shadow-lg p-4'>
+    <span class="text-white text-lg font-semibold">
+        ¿Deseas borrar el historial de reproducciones?
+    </span>
+    <div class="mt-4 text-white/60">
+        <span>
+            {{ channel.name }} ({{ channel.user.email }})
+        </span>
+        <p class="mt-4">
+            Se borrará el historial de reproducciones de YouTube en todas las apps de YouTube, en todos los dispositivos. 
+        </p>
+    </div>
+    <div class="flex justify-end mt-4 items-center">
+        <button @click='window.location.reload()' class='text-white hover:bg-cgray-600 px-3.5 py-1.5 rounded-full flex text-sm'>
+            Cancelar
+        </button>
+        <form action="{% url 'history:clear' %}" method="POST">
+            {% csrf_token %}
+            <button class='flex items-center px-3 py-1 rounded-full hover:bg-blue-400/30'>
+                <span class='text-blue-400 text-sm font-semibold mb-0.5'>
+                    Borrar el historial de reproducción
+                </span>
+            </button>
+        </form>
+    </div>
+</div>
