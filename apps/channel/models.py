@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from uuid import uuid4 as uuid
 from apps.playlist.models import Playlist
 from allauth.socialaccount.models import SocialAccount
+from apps.history.models import History
 
 
 User = get_user_model()
@@ -81,5 +82,6 @@ def save_channel(sender, instance, created, **kwargs):
         channel.slug = channel_url.format(channel.pk, instance.user.username)
         channel.save()
 
+        History.objects.create(channel=channel)
 
 

@@ -1,6 +1,6 @@
 <div :class='$store.global.sidebar.show ? "flex" : "flex"' title='{{ title }}'>
     <a 
-        href="#" 
+        href="{{ href }}" 
         :class='$store.global.sidebar.show ? "px-3 py-1" : "flex-col justify-center py-3 mx-1"' 
         class='flex w-full rounded-xl 
             {% if active == "True" %} bg-cgray-800 hover:bg-cgray-600 
