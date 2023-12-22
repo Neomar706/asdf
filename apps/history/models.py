@@ -3,8 +3,8 @@ from django.utils import timezone
 
 
 class History(models.Model):
-    channel = models.ForeignKey('channel.Channel', null=True, on_delete=models.CASCADE, related_name='history_channels')
-    videos = models.ManyToManyField('channel.Video', blank=True, related_name='history_videos')
+    channel    = models.ForeignKey('channel.Channel', on_delete=models.CASCADE, related_name='history_channels')
+    video      = models.ForeignKey('channel.Video', on_delete=models.CASCADE, related_name='history_videos')
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 

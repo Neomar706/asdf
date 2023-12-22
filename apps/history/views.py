@@ -7,37 +7,43 @@ from .models import History
 from django.utils import timezone
 
 
+MOMENT_DAYS_TEXT = ['Hace más de una semana'] + [f'Hace {(7-i)} días' for i in range(5)] + ['Ayer', 'Hoy']
 
-ONE_DAY_SECONDS = 24 * 60 * 60
-MOMENT_DAYS_LIST = [i * ONE_DAY_SECONDS for i in range(8)][::-1]
-MOMENT_DAYS_TEXT = (['Hoy','Ayer'] + [f'Hace {(i+3)} días' for i in range(5)] + ['Hace más de una semana'])[::-1]
+def get_moment(seconds):
+    ONE_DAY_SECONDS = 24 * 60 * 60
+    MOMENT_DAYS_LIST = [(7-i) * ONE_DAY_SECONDS for i in range(8)]
+
+    index = -1
+    for i, moment in enumerate(MOMENT_DAYS_LIST):
+        index = i
+        if seconds >= moment:
+            break
+
+    return MOMENT_DAYS_TEXT[index]
+
 
 class HistoryView(LoginRequiredMixin, View):
     login_url = '/account/google/login/'
     redirect_field_name = 'next'
     def get(self, request, *args, **kwargs):
         query = request.GET.get('query', '')
-        channel = Channel.objects.get(user=request.user)
-        history = History.objects.filter(channel=channel, videos__title__icontains=query)
+        channel = Channel.objects.get(user=request.user, is_active=True)
+        history = History.objects.filter(channel=channel, video__title__icontains=query).order_by('-pk')
 
         context = {}
         context['channel'] = channel
 
         if history:
-            history = history.get()
-            videos_history = []
-            for i in range(len(MOMENT_DAYS_LIST)):
-                dic = {}
-                dic['videos'] = []
-                for video in history.videos.all():
-                    deltadate = timezone.now() - video.created_at
-                    if deltadate.seconds >= MOMENT_DAYS_LIST[i]:
-                        dic['moment'] = MOMENT_DAYS_TEXT[i]
-                        dic['videos'].append(video)
-                if len(dic['videos']) > 0:
-                    videos_history.append(dic)
+            videos_history = [{'moment': m, 'videos': []} for m in MOMENT_DAYS_TEXT][::-1]
+            for his in history:
+                deltadate = timezone.now() - his.created_at
+                moment = get_moment(deltadate.total_seconds())
+                history_index = next(index for index, dic in enumerate(videos_history) if dic['moment'] == moment)
+                videos_history[history_index]['videos'].append(his.video)
+
+            videos_history = [i for i in videos_history if len(i['videos'])]
             context['history'] = videos_history
-            
+        
         else:
             context['history'] = False
 
@@ -48,28 +54,28 @@ class HistoryView(LoginRequiredMixin, View):
 
 class ClearHistory(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        channel = Channel.objects.get(user=request.user)
+        channel = Channel.objects.get(user=request.user, is_active=True)
         context = {}
         context['channel'] = channel
         return render(request, template_name='modals/clear-history.html', context=context)
 
     def post(self, request, *args, **kwargs):
-        history = History.objects.get(channel__user=request.user)
-        history.videos.clear()
-        history.save()
+        history = History.objects.filter(channel__user=request.user)
+        for his in history:
+            his.delete()
         return redirect('/feed/history/')
     
 
 
 class TogglePauseHistory(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        channel = Channel.objects.get(user=request.user)
+        channel = Channel.objects.get(user=request.user, is_active=True)
         context = {}
         context['channel'] = channel
         return render(request, template_name='modals/pause-history.html', context=context)
     
     def post(self, request, *args, **kwargs):
-        channel = Channel.objects.get(user=request.user)
+        channel = Channel.objects.get(user=request.user, is_active=True)
         channel.is_paused_history = not channel.is_paused_history
         channel.save()
         return redirect('/feed/history/')
@@ -79,9 +85,8 @@ class TogglePauseHistory(LoginRequiredMixin, View):
 class RemoveFromHistory(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         video = Video.objects.get(pk=kwargs['pk'])
-        history = History.objects.get(channel__user=request.user)
-        history.videos.remove(video)
-        history.save()
+        history = History.objects.get(channel__user=request.user, video=video)
+        history.delete()
         return redirect('/feed/history/')
 
 

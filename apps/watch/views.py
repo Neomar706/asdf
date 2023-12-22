@@ -28,13 +28,18 @@ class WatchVideo(View):
         if request.user.is_authenticated:
             social_account = SocialAccount.objects.get(user=request.user, provider='google')
             channel_logged = Channel.objects.get(user=request.user, is_active=True)
-            history = History.objects.get(channel=channel_logged)
+            history = History.objects.filter(channel=channel_logged)
 
             if not channel_logged in video.views.all():
                 video.views.add(channel_logged)
 
-            if not channel_logged.is_paused_history and not video in history.videos.all():
-                history.videos.add(video)
+            video_in_history = False
+            for his in history:
+                if his.video == video:
+                    video_in_history = True
+
+            if not channel_logged.is_paused_history and not video_in_history:
+                History.objects.create(channel=channel_logged, video=video)
 
             context['channel']    = channel_logged
             context['avatar_url'] = social_account.get_avatar_url()
