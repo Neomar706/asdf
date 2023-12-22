@@ -57,7 +57,7 @@ class Video(models.Model):
     is_for_everyone = models.BooleanField(default=True)
     views = models.ManyToManyField(Channel, blank=True, related_name='video_views')
     likes = models.ManyToManyField(Channel, blank=True, related_name='video_likes')
-    dislikes = models.ManyToManyField(Channel, blank=True, related_name='videl_dislikes')
+    dislikes = models.ManyToManyField(Channel, blank=True, related_name='video_dislikes')
     comments = models.ManyToManyField(Channel, blank=True, related_name='video_comments')
     playlists = models.ManyToManyField(Playlist, blank=True, related_name='video_playlists')
     video = models.FileField(upload_to=video_directory_path, default='image_1.jpg')
@@ -81,7 +81,3 @@ def save_channel(sender, instance, created, **kwargs):
         
         channel.slug = channel_url.format(channel.pk, instance.user.username)
         channel.save()
-
-        History.objects.create(channel=channel)
-
-
