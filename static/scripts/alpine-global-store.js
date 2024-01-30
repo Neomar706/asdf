@@ -1,11 +1,23 @@
+const _resizableContainer = document.querySelector('#resizable-container')
+
 document.addEventListener('alpine:init', () => {
     Alpine.store('global', {
         sidebar: {
             show: true,
             showWatch: false,
             toggle(){
-                if(!window.location.pathname.includes('watch')) this.show = !this.show
-                else this.showWatch = !this.showWatch
+                if(window.location.pathname.includes('watch')){
+                    this.showWatch = !this.showWatch
+                    return
+                }
+                if(window.innerWidth > 1200){
+                    this.show = !this.show
+                    if(this.show) _resizableContainer.style.marginLeft = '15rem'
+                    else _resizableContainer.style.marginLeft = '5rem'
+                    return
+                }
+                if(!this.show) this.show = true 
+                this.showWatch = !this.showWatch
             }
         },
         keywords: {

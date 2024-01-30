@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}
+Playlist - Youtube
+{% endblock title %}
+
+{% block extra_head %}
+{% endblock extra_head %}
+
+{% block modal %}
+{% endblock modal %}
+
+{% block navbar %}
+{% include "components/navbar.html" %}
+<div id="modal-sidebar">
+    {% include "pages/watch/components/sidebar.html" %}
+</div>
+{% endblock navbar %}
+
+{% block content %}
+<div class="flex text-white mt-14">
+    <div id="permanent-sidebar">
+        {% include "components/sidebar.html" %}
+    </div>
+    <div id="resizable-container" :class="$store.global.sidebar.show ? 'ml-60' : 'ml-20'" class="flex flex-col flex-1 overflow-x-hidden h-content scrollbar always-scrollbar">
+        <div class="flex mx-6 gap-4">
+            <div class="w-[23rem] h-content relative">
+                {% include "pages/playlist/components/big-card.html" %}
+            </div>
+            <div class="flex-1 my-4">
+                <div x-data="{open: false}" class="m-4 relative">
+                    <button @click="open = true" class="flex items-center gap-2 font-semibold">
+                        <span class="w-6 h-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                <path fill="white" d="M21 6H3V5h18v1zm-6 5H3v1h12v-1zm-6 6H3v1h6v-1z"></path>
+                            </svg>
+                        </span>
+                        Ordenar
+                    </button>
+                    <div x-show="open" @click.away="open = false" class="absolute top-8 left-0 py-2 bg-cgray-800 rounded-md z-10">
+                        <button class="flex px-4 py-2 w-full hover:bg-cgray-600">
+                            Fecha de carga (más recientes)
+                        </button>
+                        <button class="flex px-4 py-2 w-full hover:bg-cgray-600">
+                            Fecha de carga (más antiguos)
+                        </button>
+                        <button class="flex px-4 py-2 w-full hover:bg-cgray-600">
+                            Más populares
+                        </button>
+                        <button class="flex px-4 py-2 w-full hover:bg-cgray-600">
+                            Fecha de publicación (más antiguos)
+                        </button>
+                        <button class="flex px-4 py-2 w-full hover:bg-cgray-600">
+                            Fecha de publicación (más antiguos)
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    {% for video in playlist.videos.all %}
+                    {% include "pages/playlist/components/card.html" %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer %}
+{% endblock footer %}
+
+{% block javascript %}
+<script>
+    const linkChannel = document.getElementById('link_channel')
+    const tooltip = document.getElementById('tooltip')
+
+    linkChannel.addEventListener('mouseenter', () => {
+        tooltip.classList.remove('opacity-0')
+        tooltip.classList.add('opacity-100')
+    })
+    linkChannel.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('opacity-100')
+        tooltip.classList.add('opacity-0')
+    })
+</script>
+{% endblock javascript %}

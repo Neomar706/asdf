@@ -16,18 +16,18 @@ const video = document.querySelector("#videoplayer")
 const controls = document.querySelector('.controls')
 
 // Play/Pause
-playPauseBtn.addEventListener("click", togglePlay)
-video.addEventListener("click", togglePlay)
+playPauseBtn?.addEventListener("click", togglePlay)
+video?.addEventListener("click", togglePlay)
 
 function togglePlay() {
   video.paused ? video.play() : video.pause()
 }
 
-video.addEventListener("play", () => {
+video?.addEventListener("play", () => {
     videoContainer.classList.remove("paused")
   })
   
-  video.addEventListener("pause", () => {
+  video?.addEventListener("pause", () => {
     videoContainer.classList.add("paused")
   })
   
@@ -35,9 +35,9 @@ video.addEventListener("play", () => {
 
 
 // View Modes
-theaterBtn.addEventListener("click", toggleTheaterMode)
-fullScreenBtn.addEventListener("click", toggleFullScreenMode)
-miniPlayerBtn.addEventListener("click", toggleMiniPlayerMode)
+theaterBtn?.addEventListener("click", toggleTheaterMode)
+fullScreenBtn?.addEventListener("click", toggleFullScreenMode)
+miniPlayerBtn?.addEventListener("click", toggleMiniPlayerMode)
 
 function toggleTheaterMode() {
   videoContainer.classList.toggle("theater")
@@ -60,7 +60,7 @@ function toggleMiniPlayerMode() {
 }
 
 
-document.addEventListener("keydown", e => {
+document?.addEventListener("keydown", e => {
   const tagName = document.activeElement.tagName.toLowerCase()
 
   if (tagName === "input") return
@@ -109,7 +109,7 @@ function handleTimelineUpdate(e) {
 }
 
 // Playback Speed
-speedBtn.addEventListener("click", changePlaybackSpeed)
+speedBtn?.addEventListener("click", changePlaybackSpeed)
 
 function changePlaybackSpeed() {
   let newPlaybackRate = video.playbackRate + 0.25
@@ -122,7 +122,7 @@ function changePlaybackSpeed() {
 // const captions = video.textTracks[0]
 // captions.mode = "hidden"
 
-// captionsBtn.addEventListener("click", toggleCaptions)
+// captionsBtn?.addEventListener("click", toggleCaptions)
 
 // function toggleCaptions() {
 //   const isHidden = captions.mode === "hidden"
@@ -131,11 +131,11 @@ function changePlaybackSpeed() {
 // }
 
 // Duration
-video.addEventListener("loadeddata", () => {
+video?.addEventListener("loadeddata", () => {
   totalTimeElem.textContent = formatDuration(video.duration)
 })
 
-video.addEventListener("timeupdate", () => {
+video?.addEventListener("timeupdate", () => {
   currentTimeElem.textContent = formatDuration(video.currentTime)
   const percent = video.currentTime / video.duration
   timelineContainer.style.setProperty("--progress-position", percent)
@@ -162,8 +162,8 @@ function skip(duration) {
 }
 
 // Volume
-muteBtn.addEventListener("click", toggleMute)
-volumeSlider.addEventListener("input", e => {
+muteBtn?.addEventListener("click", toggleMute)
+volumeSlider?.addEventListener("input", e => {
   video.volume = e.target.value
   video.muted = e.target.value === 0
 })
@@ -172,7 +172,7 @@ function toggleMute() {
   video.muted = !video.muted
 }
 
-video.addEventListener("volumechange", (e) => {
+video?.addEventListener("volumechange", (e) => {
   volumeSlider.value = video.volume
   let volumeLevel
   if (video.muted || video.volume === 0) {
@@ -188,15 +188,15 @@ video.addEventListener("volumechange", (e) => {
 })
 
 
-document.addEventListener("fullscreenchange", () => {
+document?.addEventListener("fullscreenchange", () => {
   videoContainer.classList.toggle("full-screen", document.fullscreenElement)
 })
 
-video.addEventListener("enterpictureinpicture", () => {
+video?.addEventListener("enterpictureinpicture", () => {
   videoContainer.classList.add("mini-player")
 })
 
-video.addEventListener("leavepictureinpicture", () => {
+video?.addEventListener("leavepictureinpicture", () => {
   videoContainer.classList.remove("mini-player")
 })
 

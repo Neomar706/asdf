@@ -81,3 +81,6 @@ def save_channel(sender, instance, created, **kwargs):
         
         channel.slug = channel_url.format(channel.pk, instance.user.username)
         channel.save()
+
+        playlist = Playlist.objects.create(channel=channel, title='WL', is_published=False)
+        playlist.save()

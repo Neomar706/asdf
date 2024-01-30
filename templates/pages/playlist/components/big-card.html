@@ -1,0 +1,97 @@
+{% load humanize %}
+
+
+<div class="fixed h-content w-[23rem] flex flex-col">
+    <div class="relative h-full my-4 rounded-xl overflow-hidden" style="background: linear-gradient(#{{ bigcard.bgcolor }} 0%, #{{ bigcard.bgcolor }} 30%, transparent 100%);">
+        <div class="w-full h-[25rem]">
+            <img class="w-full h-full object-cover" src="/media/{{ bigcard.video.thumbnail }}" alt="Thumbnail">
+        </div>
+        <div class="absolute top-0 left-0 w-full h-full backdrop-blur-3xl overflow-y-auto scrollbar hover-scrollbar">
+            <div class="m-6 relative group rounded-xl overflow-hidden">
+                <a href="##">
+                    <img class="h-44 w-full object-cover" src="/media/{{ bigcard.video.thumbnail }}" alt="bigcard.video.title">
+                    <div class='absolute bg-black/75 opacity-0 group-hover:opacity-100 uppercase top-0 left-0 w-full h-full flex items-center justify-center transition-all ease-in-out delay-75'>
+                        <span class='text-xs text-white/90 font-semibold tracking-wide select-none flex items-center'>
+                            <span class='block w-6 h-6'>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                    <path fill='white' d="m7 4 12 8-12 8V4z"></path>
+                                </svg>
+                            </span>
+                            Reproducir todos
+                        </span>
+                    </div>
+                </a>
+            </div>
+            <h1 class="mx-6 text-2xl font-bold z-20 select-none">{{ bigcard.title }}</h1>
+            <div class="flex flex-col mt-4 mx-6 z-10">
+                <div class="group relative w-fit">
+                    <a href="{% url "channel:main" user=playlist.channel.user.username tab="main" %}" id="link_channel" class="font-bold cursor-pointer">
+                        {{ playlist.channel.name }}
+                    </a>
+                    <span id="tooltip" class="absolute bottom-10 left-0 w-max text-xs bg-cgray-600 font-semibold p-2 rounded-md opacity-0 transition-all ease-in-out delay-75 select-none bg-opacity-90">
+                        {{ playlist.channel.name }}
+                    </span>
+                </div>
+                <div class="flex">
+                    <span class="text-sm font-semibold text-white/75">
+                        {{ playlist.videos.count }} 
+                        {% if playlist.videos.count == 1 %}
+                        video&nbsp;&nbsp;
+                        {% else %}
+                        videos&nbsp;&nbsp;
+                        {% endif %}
+                    </span>
+                    <span class="text-sm font-semibold text-white/75">
+                        Sin vistas&nbsp;&nbsp;
+                    </span>
+                    <span class="text-sm font-semibold text-white/75">
+                        Se actualizó {{ playlist.updated_at|naturaltime }}&nbsp;&nbsp;
+                    </span>
+                </div>
+            </div>
+            <div x-data="{open: false}" class="mx-6 mt-4 relative">
+                <button @click="open = true" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+                    <span class="w-6 h-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                            <path fill="white" d="M12 16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zM10.5 12c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5zm0-6c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5-1.5.67-1.5 1.5z"></path>
+                        </svg>
+                    </span>
+                </button>
+                <div x-show="open" @click.away="open = false" class="absolute top-9 left-0 bg-cgray-800 rounded-md z-10">
+                    <div class="my-2">
+                        <button class="flex px-4 py-2 w-full hover:bg-cgray-600">
+                            <div class="w-6 h-6 shrink-0">
+                                <svg fill="white" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;"><path d="M20 12h-8v8h-1v-8H3v-1h8V3h1v8h8v1z"></path></svg>
+                            </div>
+                            <span class="ml-4">Agregar videos</span>
+                        </button>
+                        <button class="flex px-4 py-2 w-full hover:bg-cgray-600">
+                            <div class="w-6 h-6 shrink-0">
+                                <svg fill="white" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;"><g><path d="M12 3c-4.96 0-9 4.04-9 9s4.04 9 9 9 9-4.04 9-9-4.04-9-9-9m0-1c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm7 11H5v-2h14v2z"></path></g></svg>
+                            </div>
+                            <span class="ml-4">Quitar videos reproducidos</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-6 mt-4 flex gap-2">
+                <button class="w-full rounded-full px-2 py-1.5 text-sm font-semibold bg-white hover:bg-white/90 text-black flex gap-2 items-center justify-center">
+                    <div class="w-6 h-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%; margin-top: -6px; margin-left: -4px">
+                            <path class="ytp-svg-fill" d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z" id="ytp-id-51"></path>
+                        </svg>
+                    </div>
+                    Reproducir todo
+                </button>
+                <button class="w-full rounded-full px-2 py-1.5 text-sm font-semibold bg-white/10 hover:bg-white/20 flex gap-2 items-center justify-center">
+                    <div class="w-6 h-6 overflow-hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" focusable="false" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                            <path fill="white" d="M18.15 13.65 22 17.5l-3.85 3.85-.71-.71L20.09 18H19c-2.84 0-5.53-1.23-7.39-3.38l.76-.65C14.03 15.89 16.45 17 19 17h1.09l-2.65-2.65.71-.7zM19 7h1.09l-2.65 2.65.71.71L22 6.51l-3.85-3.85-.71.71L20.09 6H19c-3.58 0-6.86 1.95-8.57 5.09l-.73 1.34C8.16 15.25 5.21 17 2 17v1c3.58 0 6.86-1.95 8.57-5.09l.73-1.34C12.84 8.75 15.79 7 19 7zM8.59 9.98l.75-.66C7.49 7.21 4.81 6 2 6v1c2.52 0 4.92 1.09 6.59 2.98z"></path>
+                        </svg>
+                    </div>
+                    Aleatorio
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

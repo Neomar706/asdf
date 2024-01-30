@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.utils import timezone
-from django.http import HttpResponse
 from .forms import AddPlaylistForm, EditPlaylistForm
 from .models import Playlist
 from apps.channel.models import Video
@@ -11,6 +10,11 @@ from apps.channel.models import Channel, Video
 from urllib.parse import unquote
 from json import loads as load_json
 from datetime import timedelta
+from apps.channel.views import suscription
+from django.conf import settings
+from .utils import avg_image_color
+
+import os
 
 
 class AddPlaylist(LoginRequiredMixin, View):
@@ -159,7 +163,39 @@ class RemovePlaylist(LoginRequiredMixin, View):
 
 
 
+class PlaylistView(View):
+    def get(self, request, *args, **kwargs):
+        playlist = Playlist.objects.filter(channel__user=request.user, channel__is_active=True, title='WL')[0]
+        path = os.path.join(settings.BASE_DIR, 'media', *str(playlist.videos.all()[0].thumbnail).split('/'))
+        
+        context = {}
+        context['playlist'] = playlist
+
+        bigcard = {}
+        bigcard['title']      = 'Ver más tarde'
+        bigcard['video']      = playlist.videos.all()[0]
+        bigcard['bgcolor']    = avg_image_color(path)
+        bigcard['videos_qty'] = playlist.videos.count()
+        bigcard['updated_at'] = playlist.updated_at
+
+        context['bigcard'] = bigcard
+
+        print("bigcard['video'].pk: ", bigcard['video'].pk)
+
+        suscription(request, context)
+        return render(request, template_name='pages/playlist/index.html', context=context)
+
+
+class AddToPlaylist(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        video = Video.objects.get(pk=kwargs['pk'])
+        playlist = Playlist.objects.filter(channel__user=request.user, channel__is_active=True, title='WL')[0]
+        playlist.videos.add(video)
+        return redirect(request.POST['path'])
+
 add_playlist = AddPlaylist.as_view()
 add_videos_to_playlist = AddVideosToPlaylist.as_view()
 edit_playlist = EditPlaylist.as_view()
 remove_playlist = RemovePlaylist.as_view()
+playlist_view = PlaylistView.as_view()
+add_to_playlist = AddToPlaylist.as_view()
