@@ -42,7 +42,7 @@ class AddVideoForm(forms.ModelForm):
             'class': 'hidden',
         }),
         label='Video',
-        required=True
+        required=True,
     )
 
     class Meta:
